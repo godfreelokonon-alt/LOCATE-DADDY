@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="warm">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="description" content="GestiLoc — Gestion locative privée LOKONON Paul"/>
+<title>GestiLoc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════════════
+   THEMES
+   ════════════════════════════════════════════════ */
+[data-theme="warm"] {
+  --bg:       #f4f1eb;
+  --bg1:      #edeae3;
+  --bg2:      #e4e0d8;
+  --surface:  rgba(255,255,255,0.82);
+  --surface2: rgba(255,255,255,0.96);
+  --border:   rgba(0,0,0,0.09);
+  --border2:  rgba(0,0,0,0.15);
+  --green:    #0d7344;
+  --green-d:  rgba(13,115,68,0.12);
+  --red:      #b83232;
+  --red-d:    rgba(184,50,50,0.11);
+  --amber:    #a85f08;
+  --amber-d:  rgba(168,95,8,0.11);
+  --blue:     #1655a0;
+  --blue-d:   rgba(22,85,160,0.11);
+  --text:     #1a1815;
+  --text2:    #59534c;
+  --text3:    #9c958d;
+  --shadow:   rgba(0,0,0,0.08);
+  --noise:    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+  --glow1:    rgba(13,115,68,0.05);
+  --glow2:    rgba(22,85,160,0.04);
+  --topbar-bg: rgba(244,241,235,0.92);
+  --nav-bg:   rgba(244,241,235,0.95);
+  --auth-bg:  rgba(255,253,249,0.94);
+  --modal-bg: rgba(252,250,246,0.97);
+  --input-bg: rgba(255,255,255,0.85);
+}
+
+[data-theme="frost"] {
+  --bg:       #f0f4f8;
+  --bg1:      #e8edf4;
+  --bg2:      #dde4ee;
+  --surface:  rgba(255,255,255,0.80);
+  --surface2: rgba(255,255,255,0.96);
+  --border:   rgba(22,85,160,0.10);
+  --border2:  rgba(22,85,160,0.18);
+  --green:    #0a6e42;
+  --green-d:  rgba(10,110,66,0.11);
+  --red:      #b02b2b;
+  --red-d:    rgba(176,43,43,0.11);
+  --amber:    #9a5a06;
+  --amber-d:  rgba(154,90,6,0.11);
+  --blue:     #1450a8;
+  --blue-d:   rgba(20,80,168,0.12);
+  --text:     #0f1520;
+  --text2:    #4a5568;
+  --text3:    #8fa0b8;
+  --shadow:   rgba(20,80,168,0.08);
+  --noise:    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
+  --glow1:    rgba(20,80,168,0.06);
+  --glow2:    rgba(10,110,66,0.04);
+  --topbar-bg: rgba(240,244,248,0.93);
+  --nav-bg:   rgba(240,244,248,0.96);
+  --auth-bg:  rgba(248,250,255,0.95);
+  --modal-bg: rgba(245,248,255,0.97);
+  --input-bg: rgba(255,255,255,0.88);
+}
+
+/* ════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: var(--noise);
+  pointer-events: none; z-index: 0;
+}
+
+.ambient {
+  position: fixed; border-radius: 50%;
+  filter: blur(150px); pointer-events: none; z-index: 0;
+}
+.a1 { width: 60vw; height: 60vw; max-width: 700px; max-height: 700px;
+  background: radial-gradient(circle, var(--glow1) 0%, transparent 70%);
+  top: -20vw; left: -10vw; }
+.a2 { width: 50vw; height: 50vw; max-width: 600px; max-height: 600px;
+  background: radial-gradient(circle, var(--glow2) 0%, transparent 70%);
+  bottom: -15vw; right: -10vw; }
+
+/* ════════════════════════════════════════════════
+   TYPOGRAPHY SCALE — readable on all screens
+   ════════════════════════════════════════════════ */
+:root {
+  --fs-xs:   0.72rem;   /* 11.5px */
+  --fs-sm:   0.8125rem; /* 13px   */
+  --fs-base: 0.9375rem; /* 15px   */
+  --fs-md:   1rem;      /* 16px   */
+  --fs-lg:   1.125rem;  /* 18px   */
+  --fs-xl:   1.375rem;  /* 22px   */
+  --r:  12px;
+  --r2: 8px;
+  --r3: 20px;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ════════════════════════════════════════════════
+   LAYOUT
+   ════════════════════════════════════════════════ */
+#app { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+#main { display: none; flex-direction: column; min-height: 100vh; padding-bottom: 72px; }
+.content { padding: 1.25rem; flex: 1; max-width: 1100px; margin: 0 auto; width: 100%; }
+.page { display: none; }
+.page.active { display: block; animation: fadeUp .18s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+
+/* ════════════════════════════════════════════════
+   TOPBAR
+   ════════════════════════════════════════════════ */
+.topbar {
+  background: var(--topbar-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 1.25rem;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 30;
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; }
+.topbar-logo {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(13,115,68,0.25);
+}
+.topbar-logo span { font-family: var(--mono); font-size: 11px; font-weight: 500; color: #fff; letter-spacing: 0.04em; }
+.topbar-name { font-size: var(--fs-base); font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.topbar-role { font-size: var(--fs-xs); color: var(--green); font-weight: 500; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.topbar-date { font-size: var(--fs-xs); color: var(--text3); font-family: var(--mono); display: none; }
+@media (min-width: 600px) { .topbar-date { display: block; } }
+
+/* ════════════════════════════════════════════════
+   BOTTOM NAV (mobile-first)
+   ════════════════════════════════════════════════ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--border);
+  display: flex; align-items: center;
+  height: 72px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 3px;
+  padding: 8px 4px;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--text3);
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: color .15s;
+  min-height: 44px;
+}
+.nav-item.active { color: var(--green); }
+.nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-item.active svg { stroke-width: 2.2; }
+
+/* Desktop: top nav instead */
+@media (min-width: 800px) {
+  .bottom-nav { display: none; }
+  #main { padding-bottom: 0; }
+  .top-nav {
+    display: flex !important;
+    background: var(--topbar-bg);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 1.25rem; gap: 2px; overflow-x: auto;
+  }
+  .top-nav-btn {
+    padding: 12px 14px; font-size: var(--fs-sm); font-weight: 500;
+    background: none; border: none; border-bottom: 2px solid transparent;
+    cursor: pointer; color: var(--text3); white-space: nowrap;
+    font-family: 'DM Sans', sans-serif; transition: color .15s, border-color .15s;
+  }
+  .top-nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
+  .top-nav-btn:hover:not(.active) { color: var(--text2); }
+}
+.top-nav { display: none; }
+
+/* ════════════════════════════════════════════════
+   AUTH
+   ════════════════════════════════════════════════ */
+#auth-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; position: relative; z-index: 1;
+  padding: 1.25rem;
+}
+.auth-card {
+  width: 100%; max-width: 380px;
+  background: var(--auth-bg);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--r3); padding: 2.5rem 2rem; text-align: center;
+  box-shadow: 0 20px 60px var(--shadow), 0 2px 8px var(--shadow);
+}
+.auth-logo {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: var(--green); margin: 0 auto 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(13,115,68,0.28);
+}
+.auth-logo span { font-family: var(--mono); font-size: 16px; font-weight: 500; color: #fff; }
+.auth-card h1 { font-size: var(--fs-xl); font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 2px; }
+.auth-sub { font-size: var(--fs-sm); color: var(--text3); margin-bottom: 3px; }
+.auth-owner { font-size: var(--fs-sm); font-weight: 600; color: var(--green); margin-bottom: 1.75rem; }
+.auth-input {
+  width: 100%; padding: 13px 16px; font-size: var(--fs-base);
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid var(--border2); border-radius: var(--r2);
+  background: var(--input-bg); color: var(--text);
+  margin-bottom: 10px; transition: border-color .2s, box-shadow .2s;
+  letter-spacing: 0.08em;
+}
+.auth-input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-d); }
+.auth-input::placeholder { color: var(--text3); letter-spacing: 0; }
+.auth-error { color: var(--red); font-size: var(--fs-sm); margin-top: 8px; display: none; }
+.auth-hint { font-size: var(--fs-xs); color: var(--text3); margin-top: 10px; }
+
+/* ════════════════════════════════════════════════
+   BUTTONS
+   ════════════════════════════════════════════════ */
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 13px; font-size: var(--fs-base); font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--green); color: #fff; border: none;
+  border-radius: var(--r2); cursor: pointer;
+  box-shadow: 0 4px 16px rgba(13,115,68,0.25);
+  transition: opacity .15s, transform .1s;
+}
+.btn-primary:hover { opacity: .9; }
+.btn-primary:active { transform: scale(.99); }
+
+.btn-sm {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 9px 14px; font-size: var(--fs-sm); font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid var(--border2); border-radius: var(--r2);
+  background: var(--surface2); color: var(--text2); cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap; min-height: 36px;
+}
+.btn-sm:hover { background: #fff; color: var(--text); }
+
+.btn-add {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 16px; font-size: var(--fs-sm); font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--green); color: #fff; border: none;
+  border-radius: var(--r2); cursor: pointer;
+  box-shadow: 0 2px 10px rgba(13,115,68,0.22);
+  transition: opacity .15s; white-space: nowrap; min-height: 40px;
+}
+.btn-add:hover { opacity: .88; }
+
+.btn-danger {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 13px; font-size: var(--fs-xs); font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid rgba(184,50,50,0.28); border-radius: var(--r2);
+  background: var(--red-d); color: var(--red); cursor: pointer;
+  transition: background .15s; min-height: 36px;
+}
+.btn-danger:hover { background: rgba(184,50,50,0.18); }
+
+.btn-info {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 13px; font-size: var(--fs-xs); font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid rgba(22,85,160,0.25); border-radius: var(--r2);
+  background: var(--blue-d); color: var(--blue); cursor: pointer;
+  transition: background .15s; min-height: 36px;
+}
+.btn-info:hover { background: rgba(22,85,160,0.18); }
+
+.btn-edit {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 13px; font-size: var(--fs-xs); font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid rgba(168,95,8,0.25); border-radius: var(--r2);
+  background: var(--amber-d); color: var(--amber); cursor: pointer;
+  transition: background .15s; min-height: 36px;
+}
+.btn-edit:hover { background: rgba(168,95,8,0.18); }
+
+.btn-wa {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 13px; font-size: var(--fs-xs); font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid rgba(37,211,102,0.3); border-radius: var(--r2);
+  background: rgba(37,211,102,0.10); color: #1a7a3a; cursor: pointer;
+  transition: background .15s; min-height: 36px;
+}
+.btn-wa:hover { background: rgba(37,211,102,0.20); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 14px; font-size: var(--fs-sm); font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid var(--border2); border-radius: var(--r2);
+  background: var(--surface); color: var(--text2); cursor: pointer;
+  transition: background .15s; min-height: 36px;
+}
+.btn-ghost:hover { background: var(--surface2); }
+
+/* ════════════════════════════════════════════════
+   CARDS & SURFACES
+   ════════════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: 0 1px 4px var(--shadow);
+  transition: border-color .2s, box-shadow .2s;
+}
+.card:hover { border-color: var(--border2); box-shadow: 0 3px 12px var(--shadow); }
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;
+}
+.section-title { font-size: var(--fs-md); font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.section-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* ════════════════════════════════════════════════
+   STATS GRID
+   ════════════════════════════════════════════════ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 1.25rem;
+}
+@media (min-width: 500px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 800px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
+
+.stat-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: .9rem 1rem;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+.stat-label { font-size: var(--fs-xs); color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 7px; }
+.stat-value { font-size: 1.5rem; font-weight: 600; color: var(--text); font-family: var(--mono); letter-spacing: -0.02em; line-height: 1; }
+.stat-value.g { color: var(--green); }
+.stat-value.r { color: var(--red); }
+.stat-value.b { color: var(--blue); }
+.stat-value.a { color: var(--amber); }
+.stat-sub { font-size: var(--fs-xs); color: var(--text3); margin-top: 4px; }
+
+/* ════════════════════════════════════════════════
+   TABLE
+   ════════════════════════════════════════════════ */
+.table-wrap {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden; overflow-x: auto;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); min-width: 480px; }
+thead th {
+  padding: 10px 14px; text-align: left; font-weight: 600;
+  color: var(--text3); font-size: var(--fs-xs); text-transform: uppercase;
+  letter-spacing: .07em; background: rgba(0,0,0,0.025);
+  border-bottom: 0.5px solid var(--border); white-space: nowrap;
+}
+tbody td { padding: 12px 14px; color: var(--text); border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(0,0,0,0.02); }
+.empty-state { padding: 2.5rem; text-align: center; color: var(--text3); font-size: var(--fs-sm); }
+
+/* ════════════════════════════════════════════════
+   BADGES
+   ════════════════════════════════════════════════ */
+.badge {
+  display: inline-block; padding: 3px 9px;
+  border-radius: 20px; font-size: var(--fs-xs); font-weight: 600; letter-spacing: .03em; white-space: nowrap;
+}
+.b-ok  { background: var(--green-d); color: var(--green); border: 0.5px solid rgba(13,115,68,.2); }
+.b-att { background: var(--amber-d); color: var(--amber); border: 0.5px solid rgba(168,95,8,.2); }
+.b-ko  { background: var(--red-d);   color: var(--red);   border: 0.5px solid rgba(184,50,50,.2); }
+.b-free{ background: var(--blue-d);  color: var(--blue);  border: 0.5px solid rgba(22,85,160,.2); }
+.b-occ { background: var(--amber-d); color: var(--amber); border: 0.5px solid rgba(168,95,8,.2); }
+
+/* ════════════════════════════════════════════════
+   ALERT BANNERS
+   ════════════════════════════════════════════════ */
+.alert { padding: 11px 14px; border-radius: var(--r2); font-size: var(--fs-sm); margin-bottom: 1rem; }
+.alert-red  { background: var(--red-d);   border: 0.5px solid rgba(184,50,50,.25); color: var(--red); }
+.alert-amber{ background: var(--amber-d); border: 0.5px solid rgba(168,95,8,.25);  color: var(--amber); }
+.alert strong { font-weight: 600; }
+
+/* ════════════════════════════════════════════════
+   MODAL
+   ════════════════════════════════════════════════ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  align-items: center; justify-content: center; z-index: 100; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--modal-bg);
+  border: 0.5px solid var(--border2); border-radius: var(--r3);
+  padding: 1.5rem; width: 500px; max-width: 98vw;
+  max-height: 92vh; overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,.14), 0 4px 16px rgba(0,0,0,.08);
+}
+.modal h2 { font-size: var(--fs-md); font-weight: 600; margin-bottom: 1.25rem; color: var(--text); letter-spacing: -.01em; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; flex-wrap: wrap; }
+
+/* Form */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 440px) { .form-row { grid-template-columns: 1fr; } }
+.form-group { margin-bottom: 10px; }
+.form-group label { display: block; font-size: var(--fs-xs); color: var(--text3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .07em; font-weight: 600; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 11px 13px; font-size: var(--fs-sm);
+  border: 0.5px solid var(--border2); border-radius: var(--r2);
+  background: var(--input-bg); color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color .2s, box-shadow .2s;
+}
+.form-group select option { background: #fff; color: #111; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-d);
+}
+.form-group input::placeholder { color: var(--text3); }
+
+/* ════════════════════════════════════════════════
+   CHAMBRES GRID
+   ════════════════════════════════════════════════ */
+.chambres-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.chambre-card {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 1.1rem;
+  box-shadow: 0 1px 4px var(--shadow);
+  transition: border-color .2s, box-shadow .2s;
+}
+.chambre-card:hover { border-color: var(--border2); box-shadow: 0 3px 12px var(--shadow); }
+.chambre-num { font-size: var(--fs-md); font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.chambre-type { font-size: var(--fs-xs); color: var(--text3); margin-bottom: 8px; }
+.chambre-price { font-size: var(--fs-sm); font-weight: 600; color: var(--green); font-family: var(--mono); margin-top: 8px; }
+.chambre-caution { font-size: var(--fs-xs); color: var(--text3); margin-top: 2px; font-family: var(--mono); }
+.chambre-tenant { font-size: var(--fs-xs); color: var(--text2); margin-top: 5px; }
+.chambre-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+
+/* ════════════════════════════════════════════════
+   HISTORIQUE
+   ════════════════════════════════════════════════ */
+.hist-select {
+  padding: 10px 13px; font-size: var(--fs-sm);
+  border: 0.5px solid var(--border2); border-radius: var(--r2);
+  background: #fff; color: var(--text);
+  font-family: 'DM Sans', sans-serif; min-width: 220px;
+  cursor: pointer;
+}
+.hist-select:focus { outline: none; border-color: var(--green); }
+
+.loc-info-card {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 1rem 1.2rem; margin-bottom: 1rem;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+.li-label { color: var(--text3); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; }
+.li-val { font-weight: 600; color: var(--text); font-size: var(--fs-sm); margin-top: 3px; }
+
+/* ════════════════════════════════════════════════
+   RAPPORT
+   ════════════════════════════════════════════════ */
+.rapport-section {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 1.2rem; margin-bottom: 1rem;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+.rapport-section h3 {
+  font-size: var(--fs-xs); font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .07em;
+  margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 0.5px solid var(--border);
+}
+.rapport-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: var(--fs-sm); padding: 7px 0; border-bottom: 0.5px solid var(--border);
+}
+.rapport-row:last-child { border-bottom: none; }
+.rapport-row.total { font-weight: 600; font-size: var(--fs-base); padding-top: 10px; border-top: 0.5px solid var(--border2); margin-top: 4px; }
+.rapport-label { color: var(--text2); }
+.rapport-val { font-weight: 600; color: var(--text); font-family: var(--mono); }
+.rapport-val.g { color: var(--green); }
+.rapport-val.r { color: var(--red); }
+.rapport-val.a { color: var(--amber); }
+
+/* ════════════════════════════════════════════════
+   RELANCES
+   ════════════════════════════════════════════════ */
+.relance-card {
+  background: var(--surface); border: 0.5px solid rgba(184,50,50,.2);
+  border-radius: var(--r2); padding: 13px 16px; margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px; box-shadow: 0 1px 4px var(--shadow);
+}
+.relance-nom { font-size: var(--fs-sm); font-weight: 600; color: var(--text); }
+.relance-detail { font-size: var(--fs-xs); color: var(--text3); margin-top: 2px; }
+
+/* ════════════════════════════════════════════════
+   PARAMETRES
+   ════════════════════════════════════════════════ */
+.param-section {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 1.25rem; margin-bottom: 1rem;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+.param-title { font-size: var(--fs-xs); font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 1rem; }
+.param-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 12px; }
+.param-desc { font-size: var(--fs-sm); color: var(--text); font-weight: 500; }
+.param-sub { font-size: var(--fs-xs); color: var(--text3); margin-top: 2px; }
+
+/* Theme toggle pills */
+.theme-toggle { display: flex; gap: 8px; flex-wrap: wrap; }
+.theme-pill {
+  padding: 8px 16px; border-radius: 20px; font-size: var(--fs-sm); font-weight: 500;
+  border: 1.5px solid var(--border2); background: var(--surface2);
+  cursor: pointer; font-family: 'DM Sans', sans-serif; color: var(--text2);
+  transition: all .15s;
+}
+.theme-pill.active { border-color: var(--green); color: var(--green); background: var(--green-d); font-weight: 600; }
+
+/* Divider */
+.divider { border: none; border-top: 0.5px solid var(--border); margin: 1rem 0; }
+
+/* ════════════════════════════════════════════════
+   QUITTANCE — ecran
+   ════════════════════════════════════════════════ */
+.quittance-wrap {
+  background: #fff; color: #1a1a2e;
+  font-family: 'DM Sans', sans-serif;
+  border-radius: var(--r); overflow: hidden;
+  margin-top: 1rem; box-shadow: 0 8px 40px rgba(0,0,0,.18);
+}
+.qt-band {
+  background: #1a2d22;
+  padding: 24px 28px 20px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+}
+.qt-owner-name { font-size: 17px; font-weight: 600; color: #fff; letter-spacing: -.01em; margin-bottom: 2px; }
+.qt-owner-role { font-size: 10px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .12em; }
+.qt-owner-addr { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 5px; }
+.qt-doc-label { font-size: 9px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 3px; text-align: right; }
+.qt-doc-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px; font-weight: 500; color: #fff; font-style: italic; line-height: 1.2; text-align: right; }
+.qt-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(34,201,125,.85); margin-top: 5px; text-align: right; }
+.qt-body { padding: 22px 28px; background: #fff; }
+.qt-section-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: #0d7344; margin-bottom: 8px; }
+.qt-locataire-block { border: 1px solid #e0ece0; border-radius: 7px; padding: 12px 16px; margin-bottom: 16px; background: #fafcfa; }
+.qt-loc-name { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 4px; }
+.qt-loc-meta { font-size: 12px; color: #666; display: flex; gap: 14px; flex-wrap: wrap; }
+.qt-details-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #e8ece8; border-radius: 7px; overflow: hidden; margin-bottom: 16px; }
+.qt-detail-cell { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0; }
+.qt-detail-cell:nth-child(even) { border-right: none; }
+.qt-detail-cell:nth-last-child(-n+2) { border-bottom: none; }
+.qt-detail-key { font-size: 8px; text-transform: uppercase; letter-spacing: .1em; color: #999; margin-bottom: 3px; }
+.qt-detail-val { font-size: 13px; font-weight: 600; color: #222; }
+.qt-montant-block { background: #f0f9f4; border: 1px solid #c0e0d0; border-radius: 7px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.qt-montant-label { font-size: 11px; color: #2a6644; font-weight: 500; }
+.qt-montant-val { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 600; color: #1a6640; letter-spacing: -.02em; }
+.qt-montant-cur { font-size: 12px; color: #2a6644; margin-left: 5px; }
+.qt-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
+.qt-sig-box { border-top: 1px solid #ddd; padding-top: 8px; }
+.qt-sig-label { font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: #aaa; margin-bottom: 28px; }
+.qt-sig-name { font-size: 11px; color: #444; }
+.qt-footer { border-top: 1px solid #f0f0f0; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.qt-footer-left { font-size: 9px; color: #bbb; }
+.qt-footer-badge { font-family: 'DM Mono', monospace; font-size: 8px; color: #0d7344; background: #f0f9f4; border: 1px solid #c0e0d0; border-radius: 4px; padding: 2px 7px; }
+
+/* ════════════════════════════════════════════════
+   PRINT — supprime tout sauf la quittance/rapport
+   ════════════════════════════════════════════════ */
+@media print {
+  body * { visibility: hidden; }
+  #print-frame { visibility: visible; position: fixed; inset: 0; width: 100%; height: 100%; border: none; }
+}
+
+/* ════════════════════════════════════════════════
+   SCROLLBAR
+   ════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE EXTRAS
+   ════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .content { padding: 1rem; }
+  .stat-value { font-size: 1.3rem; }
+  .hide-mobile { display: none !important; }
+  .actions-wrap { flex-direction: column; align-items: stretch; }
+  .actions-wrap .btn-sm, .actions-wrap .btn-danger, .actions-wrap .btn-info, .actions-wrap .btn-edit, .actions-wrap .btn-wa { justify-content: center; }
+}
+</style>
+</head>
+<body>
+<div class="ambient a1"></div>
+<div class="ambient a2"></div>
+<iframe id="print-frame" style="display:none"></iframe>
+
+<div id="app">
+
+<!-- ══ AUTH ══════════════════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo"><span>GL</span></div>
+    <h1>GestiLoc</h1>
+    <div class="auth-sub">Gestion locative privée</div>
+    <div class="auth-owner" id="auth-owner"></div>
+    <input class="auth-input" type="password" id="pin-input" placeholder="Mot de passe"/>
+    <button class="btn-primary" onclick="login()">Connexion</button>
+    <div class="auth-error" id="auth-error">Mot de passe incorrect.</div>
+    <div class="auth-hint">Mot de passe par défaut : 1234</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════════ -->
+<div id="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo"><span>GL</span></div>
+      <div>
+        <div class="topbar-name" id="topbar-name">GestiLoc</div>
+        <div class="topbar-role" id="topbar-role">Propriétaire</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-date" id="today-date"></span>
+      <button class="btn-ghost" onclick="goPage('parametres')" style="font-size:var(--fs-xs)">Paramètres</button>
+      <button class="btn-ghost" onclick="logout()" style="font-size:var(--fs-xs)">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- Top nav (desktop) -->
+  <div class="top-nav" id="top-nav">
+    <button class="top-nav-btn active" onclick="goPage('dashboard',this)">Tableau de bord</button>
+    <button class="top-nav-btn" onclick="goPage('chambres',this)">Chambres</button>
+    <button class="top-nav-btn" onclick="goPage('locataires',this)">Locataires</button>
+    <button class="top-nav-btn" onclick="goPage('loyers',this)">Loyers</button>
+    <button class="top-nav-btn" onclick="goPage('historique',this)">Historique</button>
+    <button class="top-nav-btn" onclick="goPage('rapport',this)">Rapport</button>
+    <button class="top-nav-btn" onclick="goPage('relances',this)">Relances</button>
+    <button class="top-nav-btn" onclick="goPage('parametres',this)">Paramètres</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div id="alert-imp" class="alert alert-red" style="display:none"></div>
+      <div id="alert-bail" class="alert alert-amber" style="display:none"></div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="section-header" style="margin-top:1.25rem">
+        <span class="section-title">Derniers paiements</span>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Locataire</th><th>Chambre</th><th>Montant</th><th>Mois</th><th>Statut</th></tr></thead>
+        <tbody id="recent-payments"></tbody></table>
+      </div>
+    </div>
+
+    <!-- CHAMBRES -->
+    <div class="page" id="page-chambres">
+      <div class="section-header">
+        <span class="section-title">Mes chambres</span>
+        <button class="btn-add" onclick="openModal('modal-chambre',null)">+ Ajouter</button>
+      </div>
+      <div class="chambres-grid" id="chambres-grid"></div>
+    </div>
+
+    <!-- LOCATAIRES -->
+    <div class="page" id="page-locataires">
+      <div class="section-header">
+        <span class="section-title">Mes locataires</span>
+        <button class="btn-add" onclick="openModal('modal-locataire',null)">+ Ajouter</button>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Nom</th><th>Téléphone</th><th>Chambre</th><th>Entrée</th><th>Fin de bail</th><th>Caution</th><th class="hide-mobile">Pièce</th><th>Actions</th></tr></thead>
+        <tbody id="locataires-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- LOYERS -->
+    <div class="page" id="page-loyers">
+      <div class="section-header">
+        <span class="section-title">Loyers</span>
+        <div class="section-right">
+          <input type="month" id="loyers-mois" style="padding:9px 12px;font-size:var(--fs-sm);border:0.5px solid var(--border2);border-radius:var(--r2);background:#fff;color:var(--text);font-family:'DM Sans',sans-serif;" onchange="renderLoyers()"/>
+          <button class="btn-ghost" onclick="document.getElementById('loyers-mois').value='';renderLoyers()">Tout</button>
+          <button class="btn-add" onclick="openModal('modal-paiement',null)">+ Enregistrer</button>
+        </div>
+      </div>
+      <div id="loyers-summary" style="display:none;margin-bottom:1rem"></div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Locataire</th><th>Chambre</th><th>Montant</th><th>Mois</th><th class="hide-mobile">Date</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody id="loyers-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div class="page" id="page-historique">
+      <div class="section-header"><span class="section-title">Historique</span></div>
+      <div style="margin-bottom:1rem">
+        <select class="hist-select" id="hist-select" onchange="renderHistorique()">
+          <option value="">— Choisir un locataire —</option>
+        </select>
+      </div>
+      <div id="hist-content"></div>
+    </div>
+
+    <!-- RAPPORT -->
+    <div class="page" id="page-rapport">
+      <div class="section-header">
+        <span class="section-title">Rapport mensuel</span>
+        <div class="section-right">
+          <input type="month" id="rapport-mois" style="padding:9px 12px;font-size:var(--fs-sm);border:0.5px solid var(--border2);border-radius:var(--r2);background:#fff;color:var(--text);font-family:'DM Sans',sans-serif;" onchange="renderRapport()"/>
+          <button class="btn-ghost" onclick="printRapport()">Imprimer / PDF</button>
+        </div>
+      </div>
+      <div id="rapport-content"></div>
+    </div>
+
+    <!-- RELANCES -->
+    <div class="page" id="page-relances">
+      <div class="section-header"><span class="section-title">Locataires à relancer</span></div>
+      <div id="relances-content"></div>
+    </div>
+
+    <!-- PARAMETRES -->
+    <div class="page" id="page-parametres">
+      <div class="section-header"><span class="section-title">Paramètres</span></div>
+
+      <div class="param-section">
+        <div class="param-title">Apparence</div>
+        <div style="font-size:var(--fs-sm);color:var(--text2);margin-bottom:10px">Choisissez le thème qui vous convient le mieux.</div>
+        <div class="theme-toggle">
+          <button class="theme-pill active" id="pill-warm" onclick="setTheme('warm')">Beige chaud</button>
+          <button class="theme-pill" id="pill-frost" onclick="setTheme('frost')">Blanc givré</button>
+        </div>
+      </div>
+
+      <div class="param-section">
+        <div class="param-title">Identité du propriétaire</div>
+        <div class="form-row">
+          <div class="form-group"><label>Nom complet</label><input id="param-nom" type="text"/></div>
+          <div class="form-group"><label>Ville / Adresse</label><input id="param-adresse" type="text"/></div>
+        </div>
+        <div style="text-align:right"><button class="btn-add" onclick="saveParams()">Enregistrer</button></div>
+      </div>
+
+      <div class="param-section">
+        <div class="param-title">Sécurité — mot de passe</div>
+        <div class="form-row">
+          <div class="form-group"><label>Ancien mot de passe</label><input id="param-old-pin" type="password"/></div>
+          <div class="form-group"><label>Nouveau mot de passe</label><input id="param-new-pin" type="password"/></div>
+        </div>
+        <div style="text-align:right"><button class="btn-add" onclick="changePin()">Modifier</button></div>
+        <div id="pin-msg" style="font-size:var(--fs-sm);text-align:right;margin-top:6px;display:none"></div>
+      </div>
+
+      <div class="param-section">
+        <div class="param-title">Données</div>
+        <div class="param-row">
+          <div><div class="param-desc">Sauvegarder mes données</div><div class="param-sub">Télécharge un fichier JSON — à faire régulièrement</div></div>
+          <button class="btn-add" onclick="exportData()">Télécharger la sauvegarde</button>
+        </div>
+        <hr class="divider"/>
+        <div class="param-row">
+          <div><div class="param-desc">Restaurer une sauvegarde</div><div class="param-sub">Importer un fichier JSON précédemment exporté</div></div>
+          <label class="btn-ghost" style="cursor:pointer">Importer<input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"/></label>
+        </div>
+        <hr class="divider"/>
+        <div class="param-row">
+          <div><div class="param-desc" style="color:var(--red)">Réinitialiser toutes les données</div><div class="param-sub">Action irréversible — exporter d'abord</div></div>
+          <button class="btn-danger" onclick="resetAll()">Réinitialiser</button>
+        </div>
+        <div id="import-msg" style="font-size:var(--fs-sm);margin-top:8px;display:none"></div>
+      </div>
+
+      <div class="param-section">
+        <div class="param-title">À propos</div>
+        <div style="font-size:var(--fs-sm);color:var(--text2);line-height:1.8">
+          <div style="font-weight:600;color:var(--text);font-size:var(--fs-base)">GestiLoc v4</div>
+          <div style="margin-top:4px">Application de gestion locative privée — conçue pour <strong>LOKONON Paul</strong>, propriétaire bailleur à Cotonou, Bénin.</div>
+          <div style="margin-top:8px;padding:10px 14px;background:var(--green-d);border-radius:var(--r2);border:0.5px solid rgba(13,115,68,.2)">
+            <div style="font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.07em;color:var(--green);font-weight:700;margin-bottom:3px">Conception &amp; développement</div>
+            <div style="font-weight:600;color:var(--text)">LOKONON Godfree</div>
+            <div style="font-size:var(--fs-xs);color:var(--text3);margin-top:2px">godfreelokonon@gmail.com</div>
+          </div>
+          <div style="margin-top:10px;font-size:var(--fs-xs);color:var(--text3)">Données stockées localement sur cet appareil — aucune connexion internet requise. Exportez régulièrement vos données pour éviter toute perte.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-item active" id="nav-dashboard" onclick="goPage('dashboard')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Accueil
+  </button>
+  <button class="nav-item" id="nav-chambres" onclick="goPage('chambres')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Chambres
+  </button>
+  <button class="nav-item" id="nav-locataires" onclick="goPage('locataires')">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    Locataires
+  </button>
+  <button class="nav-item" id="nav-loyers" onclick="goPage('loyers')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>
+    Loyers
+  </button>
+  <button class="nav-item" id="nav-more" onclick="goPage('relances')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    Plus
+  </button>
+</nav>
+
+<!-- MODALES ══════════════════════════════════════════════════════ -->
+
+<!-- Chambre -->
+<div class="modal-overlay" id="modal-chambre">
+  <div class="modal">
+    <h2 id="mc-title">Ajouter une chambre</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Numéro / Nom</label><input id="c-num" placeholder="Ex : Chambre 3"/></div>
+      <div class="form-group"><label>Type</label>
+        <select id="c-type"><option>Chambre simple</option><option>Chambre double</option><option>Studio</option><option>Appartement</option><option>Autre</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Loyer mensuel (FCFA)</label><input id="c-prix" type="number" placeholder="25000"/></div>
+      <div class="form-group"><label>Caution (FCFA)</label><input id="c-caution" type="number" placeholder="50000"/></div>
+    </div>
+    <div class="form-group"><label>Description (optionnel)</label><input id="c-desc" placeholder="Ex : avec salle de bain"/></div>
+    <input type="hidden" id="c-id"/>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal('modal-chambre')">Annuler</button>
+      <button class="btn-add" onclick="saveChambre()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Locataire -->
+<div class="modal-overlay" id="modal-locataire">
+  <div class="modal">
+    <h2 id="ml-title">Ajouter un locataire</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Nom complet</label><input id="l-nom"/></div>
+      <div class="form-group"><label>Téléphone / WhatsApp</label><input id="l-tel" placeholder="229XXXXXXXX"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Pièce d'identité</label><input id="l-piece" placeholder="N° CNI / Passeport"/></div>
+      <div class="form-group"><label>Chambre</label><select id="l-chambre"></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Date d'entrée</label><input id="l-date" type="date"/></div>
+      <div class="form-group"><label>Fin de bail</label><input id="l-fin" type="date"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Caution versée (FCFA)</label><input id="l-caution" type="number" placeholder="0"/></div>
+      <div class="form-group"><label>Notes</label><input id="l-notes" placeholder="Optionnel"/></div>
+    </div>
+    <input type="hidden" id="l-id"/>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal('modal-locataire')">Annuler</button>
+      <button class="btn-add" onclick="saveLocataire()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Paiement -->
+<div class="modal-overlay" id="modal-paiement">
+  <div class="modal">
+    <h2 id="mp-title">Enregistrer un paiement</h2>
+    <div class="form-group"><label>Locataire</label><select id="p-loc" onchange="autoMontant()"></select></div>
+    <div class="form-row">
+      <div class="form-group"><label>Montant (FCFA)</label><input id="p-montant" type="number"/></div>
+      <div class="form-group"><label>Statut</label>
+        <select id="p-statut"><option value="paye">Payé</option><option value="en_attente">En attente</option><option value="impaye">Impayé</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Mois concerné</label><input id="p-mois" type="month"/></div>
+      <div class="form-group"><label>Date de paiement</label><input id="p-date" type="date"/></div>
+    </div>
+    <div class="form-group"><label>Notes</label><input id="p-notes" placeholder="Optionnel"/></div>
+    <input type="hidden" id="p-id"/>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal('modal-paiement')">Annuler</button>
+      <button class="btn-sm" onclick="aperçuQuittance()">Aperçu quittance</button>
+      <button class="btn-add" onclick="savePaiement()">Enregistrer</button>
+    </div>
+    <div id="recu-zone" style="display:none;margin-top:1rem"></div>
+  </div>
+</div>
+
+<!-- Quittance full -->
+<div class="modal-overlay" id="modal-recu">
+  <div class="modal" style="width:580px;padding:0;background:transparent;border:none;box-shadow:none;overflow:visible">
+    <div id="recu-full-content"></div>
+    <div class="modal-actions" style="padding:0 2px;margin-top:10px">
+      <button class="btn-sm" onclick="closeModal('modal-recu')">Fermer</button>
+      <button class="btn-add" onclick="printQuittance()">Imprimer / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JAVASCRIPT ════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── CONSTANTES ────────────────────────────────────────────────────
+const SK = 'gestiloc_v4';
+const DEFAULT_PIN = '1234';
+
+// ── STATE ─────────────────────────────────────────────────────────
+let S = { chambres:[], locataires:[], paiements:[], config:{ nom:'LOKONON Paul', adresse:'Cotonou, Bénin', pin:DEFAULT_PIN, theme:'warm' } };
+
+// ── PERSISTENCE ───────────────────────────────────────────────────
+function load() {
+  try { const r = localStorage.getItem(SK); if (r) S = JSON.parse(r); } catch(e) {}
+  S.chambres   = S.chambres   || [];
+  S.locataires = S.locataires || [];
+  S.paiements  = S.paiements  || [];
+  S.config     = S.config     || {};
+  S.config.nom     = S.config.nom     || 'LOKONON Paul';
+  S.config.adresse = S.config.adresse || 'Cotonou, Bénin';
+  S.config.pin     = S.config.pin     || DEFAULT_PIN;
+  S.config.theme   = S.config.theme   || 'warm';
+
+  if (!S.chambres.length) seedDemo();
+}
+function save() { try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e) {} }
+function uid()  { return Date.now() + Math.floor(Math.random()*9999); }
+function mNow() { return new Date().toISOString().slice(0,7); }
+function mPrev(m){ const d=new Date(m+'-01'); d.setMonth(d.getMonth()-1); return d.toISOString().slice(0,7); }
+
+function seedDemo() {
+  S.chambres = [
+    {id:1,num:'Chambre 1',type:'Chambre simple',prix:20000,caution:40000,desc:''},
+    {id:2,num:'Chambre 2',type:'Chambre simple',prix:20000,caution:40000,desc:''},
+    {id:3,num:'Studio A', type:'Studio',         prix:35000,caution:70000,desc:'Avec salle de bain'},
+  ];
+  S.locataires = [
+    {id:1,nom:'Kokou Amedji', tel:'97112233',piece:'CNI-0012',chambreId:1,date:'2024-01-15',fin:'2025-09-15',caution:40000,notes:''},
+    {id:2,nom:'Fatou Diallo',  tel:'96223344',piece:'PASS-044',chambreId:3,date:'2024-03-01',fin:'2025-11-01',caution:70000,notes:''},
+  ];
+  const m=mNow(), pm=mPrev(m);
+  S.paiements = [
+    {id:1,locId:1,montant:20000,mois:pm,date:pm+'-02',statut:'paye',  notes:''},
+    {id:2,locId:2,montant:35000,mois:pm,date:pm+'-03',statut:'paye',  notes:''},
+    {id:3,locId:1,montant:20000,mois:m, date:'',       statut:'impaye',notes:''},
+    {id:4,locId:2,montant:35000,mois:m, date:'',       statut:'en_attente',notes:''},
+  ];
+  save();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────
+const cById  = id => S.chambres.find(c=>c.id==id)||null;
+const lById  = id => S.locataires.find(l=>l.id==id)||null;
+const cNom   = id => { const c=cById(id); return c?c.num:'-'; };
+const lNom   = id => { const l=lById(id); return l?l.nom:'-'; };
+const lcNom  = id => { const l=lById(id); return l?cNom(l.chambreId):'-'; };
+const owner  = ()  => S.config.nom||'LOKONON Paul';
+const addr   = ()  => S.config.adresse||'Cotonou, Bénin';
+
+function fDate(s) { if(!s) return '-'; try { return new Date(s).toLocaleDateString('fr-FR'); } catch(e){ return s; } }
+function fMois(m) { if(!m) return ''; try { return new Date(m+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'}); } catch(e){ return m; } }
+function fFCFA(n) { return Number(n||0).toLocaleString('fr-FR'); }
+
+function badge(statut) {
+  if(statut==='paye')       return '<span class="badge b-ok">Payé</span>';
+  if(statut==='en_attente') return '<span class="badge b-att">En attente</span>';
+  return '<span class="badge b-ko">Impayé</span>';
+}
+
+// ── THEME ─────────────────────────────────────────────────────────
+function setTheme(t) {
+  S.config.theme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('pill-warm').classList.toggle('active', t==='warm');
+  document.getElementById('pill-frost').classList.toggle('active', t==='frost');
+  save();
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────
+function login() {
+  const v = document.getElementById('pin-input').value;
+  const err = document.getElementById('auth-error');
+  if (v === S.config.pin) {
+    err.style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main').style.display = 'flex';
+    document.getElementById('bottom-nav').style.display = 'flex';
+    initApp();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pin-input').value = '';
+  }
+}
+function logout() {
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('bottom-nav').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+function initApp() {
+  const d = new Date();
+  document.getElementById('today-date').textContent = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('topbar-name').textContent = owner();
+  document.getElementById('topbar-role').textContent = 'Propriétaire bailleur';
+  document.getElementById('auth-owner').textContent = owner();
+  document.getElementById('rapport-mois').value = mNow();
+  document.getElementById('loyers-mois').value  = mNow();
+  document.getElementById('param-nom').value     = S.config.nom;
+  document.getElementById('param-adresse').value = S.config.adresse;
+  setTheme(S.config.theme);
+  renderAll();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+const PAGES = ['dashboard','chambres','locataires','loyers','historique','rapport','relances','parametres'];
+
+function goPage(name, topBtn) {
+  PAGES.forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if (el) el.classList.toggle('active', p===name);
+  });
+  // bottom nav
+  ['dashboard','chambres','locataires','loyers'].forEach(p => {
+    const btn = document.getElementById('nav-'+p);
+    if (btn) btn.classList.toggle('active', p===name);
+  });
+  const more = document.getElementById('nav-more');
+  if (more) more.classList.toggle('active', ['historique','rapport','relances','parametres'].includes(name));
+  // top nav
+  document.querySelectorAll('.top-nav-btn').forEach(b => b.classList.remove('active'));
+  if (topBtn) topBtn.classList.add('active');
+  renderAll();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────
+function openModal(id, data) {
+  if (id==='modal-chambre') {
+    document.getElementById('mc-title').textContent = data ? 'Modifier la chambre' : 'Ajouter une chambre';
+    document.getElementById('c-num').value    = data?.num    || '';
+    document.getElementById('c-type').value   = data?.type   || 'Chambre simple';
+    document.getElementById('c-prix').value   = data?.prix   || '';
+    document.getElementById('c-caution').value= data?.caution|| '';
+    document.getElementById('c-desc').value   = data?.desc   || '';
+    document.getElementById('c-id').value     = data?.id     || '';
+  }
+  if (id==='modal-locataire') {
+    popChambresSelect();
+    document.getElementById('ml-title').textContent = data ? 'Modifier le locataire' : 'Ajouter un locataire';
+    document.getElementById('l-nom').value    = data?.nom    || '';
+    document.getElementById('l-tel').value    = data?.tel    || '';
+    document.getElementById('l-piece').value  = data?.piece  || '';
+    document.getElementById('l-chambre').value= data?.chambreId || '';
+    document.getElementById('l-date').value   = data?.date   || '';
+    document.getElementById('l-fin').value    = data?.fin    || '';
+    document.getElementById('l-caution').value= data?.caution|| '';
+    document.getElementById('l-notes').value  = data?.notes  || '';
+    document.getElementById('l-id').value     = data?.id     || '';
+  }
+  if (id==='modal-paiement') {
+    popLocSelect();
+    document.getElementById('mp-title').textContent = data ? 'Modifier le paiement' : 'Enregistrer un paiement';
+    document.getElementById('p-loc').value    = data?.locId  || '';
+    document.getElementById('p-montant').value= data?.montant|| '';
+    document.getElementById('p-mois').value   = data?.mois   || mNow();
+    document.getElementById('p-date').value   = data?.date   || new Date().toISOString().split('T')[0];
+    document.getElementById('p-statut').value = data?.statut || 'paye';
+    document.getElementById('p-notes').value  = data?.notes  || '';
+    document.getElementById('p-id').value     = data?.id     || '';
+    document.getElementById('recu-zone').style.display = 'none';
+    document.getElementById('recu-zone').innerHTML = '';
+    if (!data) autoMontant();
+  }
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
+
+// ── SELECTS ───────────────────────────────────────────────────────
+function popChambresSelect() {
+  document.getElementById('l-chambre').innerHTML =
+    S.chambres.map(c=>`<option value="${c.id}">${c.num} — ${fFCFA(c.prix)} FCFA</option>`).join('');
+}
+function popLocSelect() {
+  document.getElementById('p-loc').innerHTML =
+    S.locataires.map(l=>`<option value="${l.id}">${l.nom} (${cNom(l.chambreId)})</option>`).join('');
+}
+function autoMontant() {
+  const l = lById(document.getElementById('p-loc').value);
+  if (l) { const c=cById(l.chambreId); if(c) document.getElementById('p-montant').value=c.prix; }
+}
+
+// ── CRUD — CHAMBRES ───────────────────────────────────────────────
+function saveChambre() {
+  const num    = document.getElementById('c-num').value.trim();
+  const type   = document.getElementById('c-type').value;
+  const prix   = parseInt(document.getElementById('c-prix').value)||0;
+  const caution= parseInt(document.getElementById('c-caution').value)||0;
+  const desc   = document.getElementById('c-desc').value.trim();
+  const eid    = document.getElementById('c-id').value;
+  if (!num||!prix) return alert('Numéro et loyer obligatoires.');
+  if (eid) {
+    const i = S.chambres.findIndex(c=>c.id==eid);
+    if (i>-1) S.chambres[i] = {...S.chambres[i], num, type, prix, caution, desc};
+  } else {
+    S.chambres.push({id:uid(), num, type, prix, caution, desc});
+  }
+  save(); closeModal('modal-chambre'); renderAll();
+}
+function editChambre(id)   { const c=cById(id); if(c) openModal('modal-chambre',c); }
+function deleteChambre(id) {
+  if (!confirm('Supprimer cette chambre ?')) return;
+  S.chambres = S.chambres.filter(c=>c.id!=id); save(); renderAll();
+}
+
+// ── CRUD — LOCATAIRES ─────────────────────────────────────────────
+function saveLocataire() {
+  const nom    = document.getElementById('l-nom').value.trim();
+  const tel    = document.getElementById('l-tel').value.trim();
+  const piece  = document.getElementById('l-piece').value.trim();
+  const cId    = document.getElementById('l-chambre').value;
+  const date   = document.getElementById('l-date').value;
+  const fin    = document.getElementById('l-fin').value;
+  const caution= parseInt(document.getElementById('l-caution').value)||0;
+  const notes  = document.getElementById('l-notes').value.trim();
+  const eid    = document.getElementById('l-id').value;
+  if (!nom||!cId) return alert('Nom et chambre obligatoires.');
+  if (eid) {
+    const i = S.locataires.findIndex(l=>l.id==eid);
+    if (i>-1) S.locataires[i] = {...S.locataires[i], nom, tel, piece, chambreId:cId, date, fin, caution, notes};
+  } else {
+    S.locataires.push({id:uid(), nom, tel, piece, chambreId:cId, date, fin, caution, notes});
+  }
+  save(); closeModal('modal-locataire'); renderAll();
+}
+function editLocataire(id)   { const l=lById(id); if(l) openModal('modal-locataire',l); }
+function deleteLocataire(id) {
+  if (!confirm('Supprimer ce locataire ? Ses paiements seront conservés.')) return;
+  S.locataires = S.locataires.filter(l=>l.id!=id); save(); renderAll();
+}
+
+// ── CRUD — PAIEMENTS ──────────────────────────────────────────────
+function savePaiement() {
+  const locId  = document.getElementById('p-loc').value;
+  const montant= parseInt(document.getElementById('p-montant').value)||0;
+  const mois   = document.getElementById('p-mois').value;
+  const date   = document.getElementById('p-date').value;
+  const statut = document.getElementById('p-statut').value;
+  const notes  = document.getElementById('p-notes').value.trim();
+  const eid    = document.getElementById('p-id').value;
+  if (!locId||!montant||!mois) return alert('Locataire, montant et mois obligatoires.');
+  if (eid) {
+    const i = S.paiements.findIndex(p=>p.id==eid);
+    if (i>-1) S.paiements[i] = {...S.paiements[i], locId, montant, mois, date, statut, notes};
+  } else {
+    S.paiements.push({id:uid(), locId, montant, mois, date, statut, notes});
+  }
+  save(); closeModal('modal-paiement'); renderAll();
+}
+function editPaiement(id)   { const p=S.paiements.find(x=>x.id==id); if(p) openModal('modal-paiement',p); }
+function marquerPaye(id) {
+  const p=S.paiements.find(x=>x.id==id);
+  if(p){ p.statut='paye'; p.date=new Date().toISOString().split('T')[0]; }
+  save(); renderAll();
+}
+function deletePaiement(id) {
+  if (!confirm('Supprimer ce paiement ?')) return;
+  S.paiements = S.paiements.filter(p=>p.id!=id); save(); renderAll();
+}
+
+// ── WHATSAPP ──────────────────────────────────────────────────────
+function waRelance(lid) {
+  const l=lById(lid); if(!l||!l.tel) return alert('Numéro WhatsApp non renseigné pour ce locataire.');
+  const m = mNow();
+  const moisStr = fMois(m);
+  const c = cById(l.chambreId);
+  const loyer = c ? fFCFA(c.prix)+' FCFA' : '';
+  const msg = `Bonjour ${l.nom},\n\nNous vous rappelons que votre loyer de ${loyer} pour ${l.chambreId ? cNom(l.chambreId) : ''} — mois de ${moisStr} — est en attente de règlement.\n\nMerci de bien vouloir régulariser votre situation.\n\nCordialement,\n${owner()}`;
+  window.open('https://wa.me/'+l.tel.replace(/\D/g,'')+'?text='+encodeURIComponent(msg), '_blank');
+}
+
+// ── QUITTANCE ─────────────────────────────────────────────────────
+function buildQuittance(loc, moisStr, datePay, montant, ref, piece) {
+  const c = cById(loc.chambreId);
+  const loyer = c ? fFCFA(c.prix) : '-';
+  const today = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  return `<div class="quittance-wrap">
+    <div class="qt-band">
+      <div>
+        <div class="qt-owner-name">${owner()}</div>
+        <div class="qt-owner-role">Propriétaire bailleur</div>
+        <div class="qt-owner-addr">${addr()}</div>
+      </div>
+      <div>
+        <div class="qt-doc-label">Document officiel</div>
+        <div class="qt-doc-title">Quittance<br>de loyer</div>
+        <div class="qt-ref">${ref}</div>
+      </div>
+    </div>
+    <div class="qt-body">
+      <div class="qt-section-label">Locataire</div>
+      <div class="qt-locataire-block">
+        <div class="qt-loc-name">${loc.nom}</div>
+        <div class="qt-loc-meta">
+          <span>${cNom(loc.chambreId)}</span>
+          ${piece ? '<span>· Pièce : '+piece+'</span>' : ''}
+          ${loc.tel ? '<span>· '+loc.tel+'</span>' : ''}
+        </div>
+      </div>
+      <div class="qt-section-label">Détail du paiement</div>
+      <div class="qt-details-grid">
+        <div class="qt-detail-cell"><div class="qt-detail-key">Période couverte</div><div class="qt-detail-val">${moisStr}</div></div>
+        <div class="qt-detail-cell"><div class="qt-detail-key">Date de paiement</div><div class="qt-detail-val">${datePay||'Non renseignée'}</div></div>
+        <div class="qt-detail-cell"><div class="qt-detail-key">Loyer mensuel</div><div class="qt-detail-val">${loyer} FCFA</div></div>
+        <div class="qt-detail-cell"><div class="qt-detail-key">Type de logement</div><div class="qt-detail-val">${c?c.type:'-'}</div></div>
+      </div>
+      <div class="qt-section-label">Montant reçu</div>
+      <div class="qt-montant-block">
+        <div class="qt-montant-label">Somme perçue par le propriétaire</div>
+        <div><span class="qt-montant-val">${montant}</span><span class="qt-montant-cur">FCFA</span></div>
+      </div>
+      <div class="qt-signatures">
+        <div class="qt-sig-box"><div class="qt-sig-label">Signature du locataire</div><div class="qt-sig-name">${loc.nom}</div></div>
+        <div class="qt-sig-box"><div class="qt-sig-label">Signature du bailleur</div><div class="qt-sig-name">${owner()}</div></div>
+      </div>
+      <div class="qt-footer">
+        <div class="qt-footer-left">Émis le ${today} — Ce document tient lieu de quittance définitive</div>
+        <div class="qt-footer-badge">GestiLoc v4</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function aperçuQuittance() {
+  const lid=document.getElementById('p-loc').value;
+  const montant=parseInt(document.getElementById('p-montant').value)||0;
+  const mois=document.getElementById('p-mois').value;
+  const date=document.getElementById('p-date').value;
+  if (!lid||!montant||!mois) return;
+  const loc=lById(lid); if(!loc) return;
+  const zone=document.getElementById('recu-zone');
+  zone.innerHTML = buildQuittance(loc, fMois(mois), date, fFCFA(montant), 'APERÇU', loc.piece);
+  zone.style.display='block';
+}
+
+function showRecu(pid) {
+  const p=S.paiements.find(x=>x.id==pid); if(!p) return;
+  const loc=lById(p.locId); if(!loc) return;
+  const ref='QT-'+String(pid).slice(-6).toUpperCase();
+  document.getElementById('recu-full-content').innerHTML = buildQuittance(loc, fMois(p.mois), p.date, fFCFA(p.montant), ref, loc.piece);
+  openModal('modal-recu', null);
+}
+
+// ── PRINT ENGINE (iframe — pas window.open) ───────────────────────
+const PRINT_FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400&display=swap';
+
+const QUITTANCE_PRINT_CSS = `
+@page{margin:14mm;size:A4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a2e}
+.quittance-wrap{font-family:'DM Sans',sans-serif}
+.qt-band{background:#1a2d22!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:22px 26px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.qt-owner-name{font-size:16px;font-weight:600;color:#fff;margin-bottom:2px}
+.qt-owner-role{font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em}
+.qt-owner-addr{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px}
+.qt-doc-label{font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.14em;margin-bottom:3px;text-align:right}
+.qt-doc-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:500;color:#fff;font-style:italic;line-height:1.2;text-align:right}
+.qt-ref{font-family:'DM Mono',monospace;font-size:9px;color:rgba(34,201,125,.85);margin-top:4px;text-align:right}
+.qt-body{padding:20px 26px;background:#fff}
+.qt-section-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:#0d7344;margin-bottom:7px}
+.qt-locataire-block{border:1px solid #e0ece0;border-radius:6px;padding:10px 14px;margin-bottom:14px;background:#fafcfa}
+.qt-loc-name{font-size:15px;font-weight:600;color:#111;margin-bottom:3px}
+.qt-loc-meta{font-size:11px;color:#666;display:flex;gap:12px;flex-wrap:wrap}
+.qt-details-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid #e8ece8;border-radius:6px;overflow:hidden;margin-bottom:14px}
+.qt-detail-cell{padding:9px 13px;border-bottom:1px solid #f0f0f0;border-right:1px solid #f0f0f0}
+.qt-detail-cell:nth-child(even){border-right:none}
+.qt-detail-cell:nth-last-child(-n+2){border-bottom:none}
+.qt-detail-key{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:2px}
+.qt-detail-val{font-size:13px;font-weight:600;color:#222}
+.qt-montant-block{background:#f0f9f4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border:1px solid #c0e0d0;border-radius:6px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.qt-montant-label{font-size:11px;color:#2a6644;font-weight:500}
+.qt-montant-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:25px;font-weight:600;color:#1a6640;letter-spacing:-.02em}
+.qt-montant-cur{font-size:12px;color:#2a6644;margin-left:4px}
+.qt-signatures{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px}
+.qt-sig-box{border-top:1px solid #ddd;padding-top:7px}
+.qt-sig-label{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#aaa;margin-bottom:26px}
+.qt-sig-name{font-size:11px;color:#444}
+.qt-footer{border-top:1px solid #eee;padding-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.qt-footer-left{font-size:8px;color:#bbb}
+.qt-footer-badge{font-family:'DM Mono',monospace;font-size:7px;color:#0d7344;background:#f0f9f4;border:1px solid #c0e0d0;border-radius:3px;padding:2px 6px}
+`;
+
+const RAPPORT_PRINT_CSS = `
+@page{margin:16mm;size:A4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:#111;font-size:13px}
+.rph{border-bottom:2px solid #0d7344;padding-bottom:12px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end}
+.rph-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-style:italic;color:#111}
+.rph-mois{font-size:13px;font-weight:600;color:#111;margin-top:2px}
+.rph-owner{font-size:11px;color:#0d7344;font-weight:600}
+.rph-date{font-size:9px;color:#999;margin-top:2px}
+.rs{margin-bottom:16px}
+.rs-title{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#0d7344;margin-bottom:7px;border-bottom:.5px solid #ddd;padding-bottom:4px}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.kpi{border:1px solid #eee;border-radius:5px;padding:9px 13px}
+.kpi-label{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:3px}
+.kpi-val{font-size:19px;font-weight:600;color:#111;font-family:'DM Mono',monospace}
+.kpi-val.g{color:#0d7344}.kpi-val.r{color:#b83232}
+.kpi-unit{font-size:9px;color:#999}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:.5px solid #f0f0f0;font-size:12px}
+.rr:last-child{border-bottom:none}
+.rr-label{color:#555}
+.rr-val{font-weight:600;font-family:'DM Mono',monospace;color:#111}
+.rr-val.g{color:#0d7344}.rr-val.r{color:#b83232}.rr-val.a{color:#a85f08}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:8px;font-weight:600}
+.b-ok{background:#e4f5ed;color:#0a5c38}.b-att{background:#fef3e2;color:#7a4a08}.b-ko{background:#fdecea;color:#8b2020}
+.rfooter{margin-top:18px;border-top:1px solid #eee;padding-top:10px;font-size:8px;color:#bbb;display:flex;justify-content:space-between}
+`;
+
+function printViaIframe(html, css, title) {
+  const frame = document.getElementById('print-frame');
+  frame.style.display = 'block';
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  doc.open();
+  doc.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${title}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="${PRINT_FONTS}" rel="stylesheet"><style>${css}</style></head><body>${html}</body></html>`);
+  doc.close();
+  frame.onload = () => {
+    setTimeout(() => {
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+      setTimeout(() => { frame.style.display='none'; }, 1000);
+    }, 500);
+  };
+}
+
+function printQuittance() {
+  const html = document.getElementById('recu-full-content').innerHTML;
+  if (!html) return;
+  printViaIframe(html, QUITTANCE_PRINT_CSS, 'Quittance de loyer — GestiLoc');
+}
+
+function printRapport() {
+  const mois = document.getElementById('rapport-mois').value;
+  if (!mois) return alert('Sélectionnez un mois d\'abord.');
+  const moisStr = fMois(mois);
+  const ps = S.paiements.filter(p=>p.mois===mois);
+  const payes   = ps.filter(p=>p.statut==='paye');
+  const impayes = ps.filter(p=>p.statut==='impaye');
+  const attente = ps.filter(p=>p.statut==='en_attente');
+  const totalPercu = payes.reduce((s,p)=>s+p.montant,0);
+  const totalImp   = impayes.reduce((s,p)=>s+p.montant,0);
+  const totalAtt   = attente.reduce((s,p)=>s+p.montant,0);
+  const attendu = S.locataires.reduce((s,l)=>{ const c=cById(l.chambreId); return s+(c?c.prix:0); },0);
+  const taux = attendu>0 ? Math.round((totalPercu/attendu)*100) : 0;
+  const occIds = [...new Set(S.locataires.map(l=>l.chambreId))].filter(id=>S.chambres.find(c=>c.id==id));
+  const today = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+
+  const badgePr = s => s==='paye'?'<span class="badge b-ok">Payé</span>':s==='en_attente'?'<span class="badge b-att">En attente</span>':'<span class="badge b-ko">Impayé</span>';
+
+  const html = `
+    <div class="rph">
+      <div><div class="rph-title">Rapport mensuel</div><div class="rph-mois">${moisStr}</div></div>
+      <div style="text-align:right"><div class="rph-owner">${owner()}</div><div class="rph-date">Généré le ${today}</div></div>
+    </div>
+    <div class="rs">
+      <div class="rs-title">Synthèse financière</div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Loyers attendus</div><div class="kpi-val">${fFCFA(attendu)}</div><div class="kpi-unit">FCFA</div></div>
+        <div class="kpi"><div class="kpi-label">Loyers perçus</div><div class="kpi-val g">${fFCFA(totalPercu)}</div><div class="kpi-unit">FCFA</div></div>
+        <div class="kpi"><div class="kpi-label">En attente</div><div class="kpi-val">${fFCFA(totalAtt)}</div><div class="kpi-unit">FCFA</div></div>
+        <div class="kpi"><div class="kpi-label">Impayés</div><div class="kpi-val r">${fFCFA(totalImp)}</div><div class="kpi-unit">FCFA</div></div>
+      </div>
+      <div class="rr"><span class="rr-label">Taux de recouvrement</span><span class="rr-val ${taux>=80?'g':'r'}">${taux}%</span></div>
+    </div>
+    <div class="rs">
+      <div class="rs-title">Détail par locataire</div>
+      ${S.locataires.map(l=>{
+        const c=cById(l.chambreId);
+        const p=ps.find(x=>x.locId==l.id);
+        const st=p?badgePr(p.statut):'<span class="badge b-ko">Non enregistré</span>';
+        const mt=p?fFCFA(p.montant)+' FCFA':(c?fFCFA(c.prix)+' FCFA':'—');
+        return '<div class="rr"><span class="rr-label">'+l.nom+' <span style="color:#bbb;font-size:10px">— '+cNom(l.chambreId)+'</span></span><span style="display:flex;align-items:center;gap:8px">'+st+'<span class="rr-val">'+mt+'</span></span></div>';
+      }).join('')}
+    </div>
+    <div class="rs">
+      <div class="rs-title">Occupation</div>
+      <div class="rr"><span class="rr-label">Chambres totales</span><span class="rr-val">${S.chambres.length}</span></div>
+      <div class="rr"><span class="rr-label">Occupées</span><span class="rr-val g">${occIds.length}</span></div>
+      <div class="rr"><span class="rr-label">Libres</span><span class="rr-val">${S.chambres.length-occIds.length}</span></div>
+    </div>
+    <div class="rfooter"><span>GestiLoc v4 — Application de gestion locative privée</span><span>${owner()} — ${today}</span></div>
+  `;
+  printViaIframe(html, RAPPORT_PRINT_CSS, 'Rapport '+moisStr+' — GestiLoc');
+}
+
+// ── PARAMETRES ────────────────────────────────────────────────────
+function saveParams() {
+  const nom = document.getElementById('param-nom').value.trim();
+  const adr = document.getElementById('param-adresse').value.trim();
+  if (!nom) return alert('Le nom est obligatoire.');
+  S.config.nom = nom; S.config.adresse = adr; save();
+  document.getElementById('topbar-name').textContent = nom;
+  document.getElementById('auth-owner').textContent  = nom;
+  alert('Informations enregistrées.');
+}
+function changePin() {
+  const old = document.getElementById('param-old-pin').value;
+  const nw  = document.getElementById('param-new-pin').value;
+  const msg = document.getElementById('pin-msg');
+  if (old!==S.config.pin) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Ancien mot de passe incorrect.'; return; }
+  if (!nw||nw.length<3)   { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Minimum 3 caractères.'; return; }
+  S.config.pin=nw; save();
+  document.getElementById('param-old-pin').value='';
+  document.getElementById('param-new-pin').value='';
+  msg.style.display='block'; msg.style.color='var(--green)'; msg.textContent='Mot de passe modifié.';
+}
+function exportData() {
+  const blob = new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='gestiloc_'+new Date().toISOString().split('T')[0]+'.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(e) {
+  const file=e.target.files[0]; const msg=document.getElementById('import-msg');
+  if (!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try {
+      const data=JSON.parse(ev.target.result);
+      if (!data.chambres||!data.locataires||!data.paiements) throw new Error();
+      if (!confirm('Remplacer toutes les données actuelles ?')) return;
+      S=data; if(!S.config) S.config={nom:'LOKONON Paul',adresse:'Cotonou, Bénin',pin:DEFAULT_PIN,theme:'warm'};
+      if(!S.config.pin) S.config.pin=DEFAULT_PIN;
+      save(); msg.style.display='block'; msg.style.color='var(--green)';
+      msg.textContent='Import réussi — '+S.chambres.length+' chambres, '+S.locataires.length+' locataires.';
+      initApp();
+    } catch(err) {
+      msg.style.display='block'; msg.style.color='var(--red)';
+      msg.textContent='Fichier invalide. Utilisez une sauvegarde GestiLoc.';
+    }
+  };
+  r.readAsText(file); e.target.value='';
+}
+function resetAll() {
+  if (!confirm('ATTENTION : toutes les données seront effacées.\n\nConfirmer la réinitialisation ?')) return;
+  const {pin,nom,adresse,theme}=S.config;
+  S={chambres:[],locataires:[],paiements:[],config:{pin,nom,adresse,theme}};
+  save(); alert('Base de données réinitialisée.'); renderAll();
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────
+function renderAll() {
+  renderDashboard(); renderChambres(); renderLocataires();
+  renderLoyers(); renderHistorique(); renderRapport(); renderRelances();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+function renderDashboard() {
+  const m=mNow(), today=new Date().toISOString().split('T')[0];
+  const occIds=[...new Set(S.locataires.map(l=>l.chambreId))].filter(id=>S.chambres.find(c=>c.id==id));
+  const nbOcc=occIds.length, total=S.chambres.length;
+  const psM=S.paiements.filter(p=>p.mois===m);
+  const impayes=psM.filter(p=>p.statut==='impaye');
+  const attente=psM.filter(p=>p.statut==='en_attente');
+  const recettes=psM.filter(p=>p.statut==='paye').reduce((s,p)=>s+p.montant,0);
+  const attendu=S.locataires.reduce((s,l)=>{ const c=cById(l.chambreId); return s+(c?c.prix:0); },0);
+  const taux=attendu>0?Math.round((recettes/attendu)*100):0;
+
+  document.getElementById('stats-grid').innerHTML = [
+    ['Chambres','--',total,''],
+    ['Occupées','g',nbOcc,''],
+    ['Libres','b',total-nbOcc,''],
+    ['Impayés ce mois','r',impayes.length,''],
+    ['Recettes du mois','g',fFCFA(recettes),'FCFA'],
+    ['Recouvrement','${taux>=80?"g":taux>=50?"a":"r"}',taux+'%',''],
+  ].map(([label,cls,val,sub],i)=>`<div class="stat-card">
+    <div class="stat-label">${label}</div>
+    <div class="stat-value ${i===5?(taux>=80?'g':taux>=50?'a':'r'):cls}">${val}</div>
+    ${sub?`<div class="stat-sub">${sub}</div>`:''}
+  </div>`).join('');
+
+  const alertImp=document.getElementById('alert-imp');
+  const prob=impayes.length+attente.length;
+  alertImp.style.display=prob>0?'block':'none';
+  if(prob>0) alertImp.innerHTML=`<strong>Attention :</strong> ${prob} loyer(s) impayé(s) ou en attente ce mois.`;
+
+  const in30=new Date(); in30.setDate(in30.getDate()+30);
+  const in30s=in30.toISOString().split('T')[0];
+  const expiring=S.locataires.filter(l=>l.fin&&l.fin>=today&&l.fin<=in30s);
+  const alertBail=document.getElementById('alert-bail');
+  alertBail.style.display=expiring.length?'block':'none';
+  if(expiring.length) alertBail.innerHTML=`<strong>Baux expirant sous 30 jours :</strong> ${expiring.map(l=>l.nom+' ('+fDate(l.fin)+')').join(', ')}`;
+
+  const recent=[...S.paiements].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,8);
+  const tbody=document.getElementById('recent-payments');
+  if(!recent.length){tbody.innerHTML='<tr><td colspan="5" class="empty-state">Aucun paiement enregistré</td></tr>';return;}
+  tbody.innerHTML=recent.map(p=>`<tr>
+    <td style="font-weight:600">${lNom(p.locId)}</td>
+    <td style="color:var(--text2)">${lcNom(p.locId)}</td>
+    <td style="font-family:var(--mono)">${fFCFA(p.montant)} FCFA</td>
+    <td style="color:var(--text2)">${fMois(p.mois)}</td>
+    <td>${badge(p.statut)}</td>
+  </tr>`).join('');
+}
+
+// ── CHAMBRES ──────────────────────────────────────────────────────
+function renderChambres() {
+  const g=document.getElementById('chambres-grid');
+  if(!S.chambres.length){g.innerHTML='<div class="empty-state">Aucune chambre enregistrée.</div>';return;}
+  g.innerHTML=S.chambres.map(c=>{
+    const occ=S.locataires.find(l=>l.chambreId==c.id);
+    const b=occ?'<span class="badge b-occ">Occupée</span>':'<span class="badge b-free">Libre</span>';
+    return `<div class="chambre-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div class="chambre-num">${c.num}</div>${b}
+      </div>
+      <div class="chambre-type">${c.type}${c.desc?' — '+c.desc:''}</div>
+      ${occ?`<div class="chambre-tenant">${occ.nom}</div>`:''}
+      <div class="chambre-price">${fFCFA(c.prix)} FCFA / mois</div>
+      ${c.caution?`<div class="chambre-caution">Caution : ${fFCFA(c.caution)} FCFA</div>`:''}
+      <div class="chambre-actions">
+        <button class="btn-edit" onclick="editChambre(${c.id})">Modifier</button>
+        <button class="btn-danger" onclick="deleteChambre(${c.id})">Supprimer</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── LOCATAIRES ────────────────────────────────────────────────────
+function renderLocataires() {
+  const tbody=document.getElementById('locataires-body');
+  if(!S.locataires.length){tbody.innerHTML='<tr><td colspan="8" class="empty-state">Aucun locataire.</td></tr>';return;}
+  const today=new Date().toISOString().split('T')[0];
+  tbody.innerHTML=S.locataires.map(l=>{
+    const expire=l.fin&&l.fin<today;
+    const finBadge=expire?`<span class="badge b-ko">${fDate(l.fin)}</span>`:`<span style="font-size:var(--fs-sm)">${fDate(l.fin)}</span>`;
+    return `<tr>
+      <td style="font-weight:600">${l.nom}</td>
+      <td style="font-family:var(--mono);color:var(--text2)">${l.tel||'-'}</td>
+      <td>${cNom(l.chambreId)}</td>
+      <td style="color:var(--text2)">${fDate(l.date)}</td>
+      <td>${finBadge}</td>
+      <td style="font-family:var(--mono)">${l.caution?fFCFA(l.caution)+' F':'-'}</td>
+      <td class="hide-mobile" style="color:var(--text3);font-size:var(--fs-xs)">${l.piece||'-'}</td>
+      <td><div class="actions-wrap" style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="btn-info" onclick="goHistorique(${l.id})">Historique</button>
+        <button class="btn-edit" onclick="editLocataire(${l.id})">Modifier</button>
+        <button class="btn-wa"   onclick="waRelance(${l.id})">WhatsApp</button>
+        <button class="btn-danger" onclick="deleteLocataire(${l.id})">Retirer</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── LOYERS ────────────────────────────────────────────────────────
+function renderLoyers() {
+  const tbody=document.getElementById('loyers-body');
+  const fm=document.getElementById('loyers-mois')?document.getElementById('loyers-mois').value:'';
+  let src=[...S.paiements].sort((a,b)=>(b.mois||'').localeCompare(a.mois||'')||(b.date||'').localeCompare(a.date||''));
+  if(fm) src=src.filter(p=>p.mois===fm);
+
+  const sumEl=document.getElementById('loyers-summary');
+  if(fm&&src.length){
+    const percu=src.filter(p=>p.statut==='paye').reduce((s,p)=>s+p.montant,0);
+    const nAtt=src.filter(p=>p.statut==='en_attente').length;
+    const nImp=src.filter(p=>p.statut==='impaye').length;
+    const ml=fMois(fm);
+    sumEl.style.display='flex'; sumEl.style.gap='10px'; sumEl.style.flexWrap='wrap';
+    sumEl.innerHTML=`
+      <div class="stat-card" style="flex:1;min-width:140px"><div class="stat-label">Perçus — ${ml}</div><div class="stat-value g" style="font-size:1.2rem">${fFCFA(percu)}<span style="font-size:.75rem;margin-left:3px;opacity:.7">FCFA</span></div></div>
+      <div class="stat-card" style="flex:1;min-width:100px"><div class="stat-label">En attente</div><div class="stat-value a">${nAtt}</div></div>
+      <div class="stat-card" style="flex:1;min-width:100px"><div class="stat-label">Impayés</div><div class="stat-value r">${nImp}</div></div>`;
+  } else { sumEl.style.display='none'; }
+
+  if(!src.length){
+    tbody.innerHTML=`<tr><td colspan="7" class="empty-state">${fm?'Aucun paiement pour ce mois.':'Aucun paiement enregistré.'}</td></tr>`;return;
+  }
+  tbody.innerHTML=src.map(p=>{
+    const act=p.statut!=='paye'
+      ?`<button class="btn-add" style="font-size:var(--fs-xs);padding:6px 11px" onclick="marquerPaye(${p.id})">Marquer payé</button>`
+      :`<button class="btn-info" onclick="showRecu(${p.id})">Quittance</button>`;
+    return `<tr>
+      <td style="font-weight:600">${lNom(p.locId)}</td>
+      <td style="color:var(--text2)">${lcNom(p.locId)}</td>
+      <td style="font-family:var(--mono)">${fFCFA(p.montant)} FCFA</td>
+      <td style="color:var(--text2)">${fMois(p.mois)}</td>
+      <td class="hide-mobile" style="color:var(--text3);font-size:var(--fs-xs)">${p.date||'-'}</td>
+      <td>${badge(p.statut)}</td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">
+        ${act}
+        <button class="btn-edit" onclick="editPaiement(${p.id})">Modifier</button>
+        <button class="btn-danger" onclick="deletePaiement(${p.id})">Sup.</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── HISTORIQUE ────────────────────────────────────────────────────
+function goHistorique(lid) {
+  goPage('historique');
+  const sel=document.getElementById('hist-select');
+  sel.innerHTML='<option value="">— Choisir —</option>'+S.locataires.map(l=>`<option value="${l.id}">${l.nom}</option>`).join('');
+  sel.value=lid;
+  renderHistorique();
+}
+function renderHistorique() {
+  const sel=document.getElementById('hist-select');
+  sel.innerHTML='<option value="">— Choisir un locataire —</option>'+S.locataires.map(l=>`<option value="${l.id}">${l.nom}</option>`).join('');
+  const lid=sel.value;
+  const div=document.getElementById('hist-content');
+  if(!lid){div.innerHTML='<div class="empty-state">Sélectionnez un locataire pour voir son historique.</div>';return;}
+  const loc=lById(lid); if(!loc){div.innerHTML='';return;}
+  const c=cById(loc.chambreId);
+  const total=S.paiements.filter(p=>p.locId==lid&&p.statut==='paye').reduce((s,p)=>s+p.montant,0);
+  const ps=S.paiements.filter(p=>p.locId==lid).sort((a,b)=>(b.mois||'').localeCompare(a.mois||''));
+  div.innerHTML=`
+    <div class="loc-info-card">
+      <div><div class="li-label">Nom</div><div class="li-val">${loc.nom}</div></div>
+      <div><div class="li-label">Téléphone</div><div class="li-val">${loc.tel||'-'}</div></div>
+      <div><div class="li-label">Chambre</div><div class="li-val">${c?c.num:'-'}</div></div>
+      <div><div class="li-label">Loyer mensuel</div><div class="li-val">${c?fFCFA(c.prix)+' FCFA':'-'}</div></div>
+      <div><div class="li-label">Entrée</div><div class="li-val">${fDate(loc.date)}</div></div>
+      <div><div class="li-label">Fin de bail</div><div class="li-val">${fDate(loc.fin)}</div></div>
+      <div><div class="li-label">Caution versée</div><div class="li-val">${loc.caution?fFCFA(loc.caution)+' FCFA':'-'}</div></div>
+      <div><div class="li-label">Total encaissé</div><div class="li-val" style="color:var(--green)">${fFCFA(total)} FCFA</div></div>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Mois</th><th>Montant</th><th>Date</th><th>Statut</th><th>Quittance</th></tr></thead>
+      <tbody>${!ps.length?'<tr><td colspan="5" class="empty-state">Aucun paiement</td></tr>':ps.map(p=>`<tr>
+        <td>${fMois(p.mois)}</td>
+        <td style="font-family:var(--mono)">${fFCFA(p.montant)} FCFA</td>
+        <td style="color:var(--text2)">${p.date||'-'}</td>
+        <td>${badge(p.statut)}</td>
+        <td>${p.statut==='paye'?`<button class="btn-info" onclick="showRecu(${p.id})">Voir</button>`:'—'}</td>
+      </tr>`).join('')}</tbody></table>
+    </div>`;
+  sel.value=lid;
+}
+
+// ── RAPPORT ───────────────────────────────────────────────────────
+function renderRapport() {
+  const mois=document.getElementById('rapport-mois').value;
+  if(!mois){document.getElementById('rapport-content').innerHTML='<div class="empty-state">Sélectionnez un mois.</div>';return;}
+  const moisStr=fMois(mois);
+  const ps=S.paiements.filter(p=>p.mois===mois);
+  const payes=ps.filter(p=>p.statut==='paye');
+  const impayes=ps.filter(p=>p.statut==='impaye');
+  const attente=ps.filter(p=>p.statut==='en_attente');
+  const totalPercu=payes.reduce((s,p)=>s+p.montant,0);
+  const totalImp=impayes.reduce((s,p)=>s+p.montant,0);
+  const totalAtt=attente.reduce((s,p)=>s+p.montant,0);
+  const attendu=S.locataires.reduce((s,l)=>{ const c=cById(l.chambreId); return s+(c?c.prix:0); },0);
+  const taux=attendu>0?Math.round((totalPercu/attendu)*100):0;
+  const occIds=[...new Set(S.locataires.map(l=>l.chambreId))].filter(id=>S.chambres.find(c=>c.id==id));
+
+  document.getElementById('rapport-content').innerHTML=`
+    <div class="rapport-section">
+      <h3>Synthèse — ${moisStr}</h3>
+      <div class="rapport-row"><span class="rapport-label">Loyers attendus</span><span class="rapport-val">${fFCFA(attendu)} FCFA</span></div>
+      <div class="rapport-row"><span class="rapport-label">Loyers perçus</span><span class="rapport-val g">${fFCFA(totalPercu)} FCFA</span></div>
+      <div class="rapport-row"><span class="rapport-label">En attente de règlement</span><span class="rapport-val a">${fFCFA(totalAtt)} FCFA</span></div>
+      <div class="rapport-row"><span class="rapport-label">Impayés</span><span class="rapport-val r">${fFCFA(totalImp)} FCFA</span></div>
+      <div class="rapport-row total"><span class="rapport-label">Taux de recouvrement</span><span class="rapport-val ${taux>=80?'g':'r'}">${taux} %</span></div>
+    </div>
+    <div class="rapport-section">
+      <h3>Détail par locataire</h3>
+      ${S.locataires.map(l=>{
+        const c=cById(l.chambreId);
+        const p=ps.find(x=>x.locId==l.id);
+        const st=p?badge(p.statut):'<span class="badge b-ko">Non enregistré</span>';
+        const mt=p?fFCFA(p.montant)+' FCFA':(c?fFCFA(c.prix)+' FCFA':'—');
+        return `<div class="rapport-row"><span class="rapport-label">${l.nom} — ${cNom(l.chambreId)}</span><span style="display:flex;align-items:center;gap:8px">${st}<span class="rapport-val">${mt}</span></span></div>`;
+      }).join('')}
+    </div>
+    <div class="rapport-section">
+      <h3>Occupation</h3>
+      <div class="rapport-row"><span class="rapport-label">Chambres totales</span><span class="rapport-val">${S.chambres.length}</span></div>
+      <div class="rapport-row"><span class="rapport-label">Occupées</span><span class="rapport-val g">${occIds.length}</span></div>
+      <div class="rapport-row"><span class="rapport-label">Libres</span><span class="rapport-val b">${S.chambres.length-occIds.length}</span></div>
+    </div>
+    <div style="text-align:right;font-size:var(--fs-xs);color:var(--text3);margin-top:8px">
+      Rapport GestiLoc — ${owner()} — ${new Date().toLocaleDateString('fr-FR')}
+    </div>`;
+}
+
+// ── RELANCES ──────────────────────────────────────────────────────
+function renderRelances() {
+  const m=mNow(), div=document.getElementById('relances-content');
+  const aRelancer=S.locataires.filter(l=>{ const p=S.paiements.find(x=>x.locId==l.id&&x.mois===m); return !p||p.statut!=='paye'; });
+  if(!aRelancer.length){ div.innerHTML='<div class="empty-state" style="color:var(--green)">Tous les locataires sont à jour ce mois-ci.</div>'; return; }
+  const ml=fMois(m);
+  div.innerHTML=`<div style="font-size:var(--fs-sm);color:var(--text2);margin-bottom:1rem">${aRelancer.length} locataire(s) à relancer pour ${ml}</div>`+
+    aRelancer.map(l=>{
+      const c=cById(l.chambreId);
+      const p=S.paiements.find(x=>x.locId==l.id&&x.mois===m);
+      const st=p?badge(p.statut):'<span class="badge b-ko">Non enregistré</span>';
+      return `<div class="relance-card">
+        <div>
+          <div class="relance-nom">${l.nom}</div>
+          <div class="relance-detail">${cNom(l.chambreId)} — ${c?fFCFA(c.prix)+' FCFA':''} — Tél : ${l.tel||'non renseigné'}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${st}
+          <button class="btn-wa" onclick="waRelance(${l.id})">WhatsApp</button>
+          <button class="btn-add" onclick="marquerPayeRelance(${l.id})">Marquer payé</button>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function marquerPayeRelance(lid) {
+  const m=mNow(), loc=lById(lid), c=loc?cById(loc.chambreId):null;
+  const p=S.paiements.find(x=>x.locId==lid&&x.mois===m);
+  if(p){ p.statut='paye'; p.date=new Date().toISOString().split('T')[0]; }
+  else if(loc&&c) S.paiements.push({id:uid(),locId:lid,montant:c.prix,mois:m,date:new Date().toISOString().split('T')[0],statut:'paye',notes:''});
+  save(); renderAll();
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  load();
+  document.documentElement.setAttribute('data-theme', S.config.theme||'warm');
+  document.getElementById('auth-owner').textContent = S.config.nom||'LOKONON Paul';
+  document.getElementById('pin-input').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+  // hide bottom-nav until logged in
+  document.getElementById('bottom-nav').style.display = 'none';
+});
+</script>
+</body>
+</html>
