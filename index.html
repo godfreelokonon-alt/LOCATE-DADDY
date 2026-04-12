@@ -38,14 +38,37 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px}
 
 /* Animations */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(.4deg)}}
 @keyframes glow{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
 @keyframes orbit{0%{transform:rotate(0deg) translateX(120px) rotate(0deg)}100%{transform:rotate(360deg) translateX(120px) rotate(-360deg)}}
 @keyframes orbit2{0%{transform:rotate(180deg) translateX(80px) rotate(-180deg)}100%{transform:rotate(540deg) translateX(80px) rotate(-540deg)}}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ripple{to{transform:scale(2.5);opacity:0}}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+
+/* Ripple effect on buttons */
+.btn-main,.btn-cta,.bp,.L-cta,.L-ghost,.qa-card{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);transform:scale(0);animation:ripple .5s ease-out;pointer-events:none}
+
+/* Scroll reveal */
+.sr{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.sr.visible{opacity:1;transform:none}
+
+/* Form validation visual */
+.ff input.valid{border-color:var(--em-400);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231aaa56' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='20,6 9,17 4,12'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:calc(100% - 12px) center}
+.ff input.invalid{border-color:var(--err);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c43030' stroke-width='2.5' stroke-linecap='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:calc(100% - 12px) center}
+
+/* Enhanced button press effect */
+.btn-main:active,.btn-cta:active,.bp:active{transform:scale(.97)}
+.L-cta:active{transform:scale(.98)}
+.qa-card:active{transform:scale(.98)}
+
+/* Icon sizing fix - bigger, consistent */
 
 #app{position:relative;z-index:1}
 #main-app{display:none;min-height:100dvh;padding-bottom:72px}
@@ -517,28 +540,28 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
     </div>
 
     <div class="L-sections">
-      <div class="L-counters">
+      <div class="L-counters sr">
         <div class="L-ctr"><div class="L-ctr-v" data-target="500">0</div><div class="L-ctr-l">Proprietaires actifs</div></div>
         <div class="L-ctr"><div class="L-ctr-v" data-target="3200">0</div><div class="L-ctr-l">Chambres gerees</div></div>
         <div class="L-ctr"><div class="L-ctr-v" data-target="15">0</div><div class="L-ctr-l">Villes du Benin</div></div>
         <div class="L-ctr"><div class="L-ctr-v m" data-target="850">0</div><div class="L-ctr-l">FCFA geres / mois</div></div>
       </div>
 
-      <div class="L-stitle">Comment ca marche ?</div>
-      <div class="L-steps">
+      <div class="L-stitle sr">Comment ca marche ?</div>
+      <div class="L-steps sr">
         <div class="L-step"><div class="L-step-n">1</div><div class="L-step-ic"><svg viewBox="0 0 24 24"><path d="M3 10.2L12 3l9 7.2V20a2 2 0 01-2 2H5a2 2 0 01-2-2V10.2z"/><rect x="9" y="14" width="6" height="8" rx="1"/></svg></div><div class="L-step-t">Ajoutez vos biens</div><div class="L-step-d">Chambres, studios, boutiques. En 30 secondes avec le loyer et la caution.</div></div>
         <div class="L-step"><div class="L-step-n">2</div><div class="L-step-ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3.5"/><path d="M2 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M22 20c0-2.5-1.8-4.2-4.2-4.8"/></svg></div><div class="L-step-t">Associez vos locataires</div><div class="L-step-d">Renseignez leurs infos et leur WhatsApp pour les relances automatiques.</div></div>
         <div class="L-step"><div class="L-step-n">3</div><div class="L-step-ic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><div class="L-step-t">Encaissez et suivez</div><div class="L-step-d">Paiements, quittances, rapports mensuels. Tout est automatise.</div></div>
       </div>
 
-      <div class="L-stitle">Ils nous font confiance</div>
-      <div class="L-tsts">
+      <div class="L-stitle sr">Ils nous font confiance</div>
+      <div class="L-tsts sr">
         <div class="L-tst"><div class="L-tst-q">"</div><div class="L-tst-txt">Avant je perdais des loyers parce que j'oubliais qui avait paye. Avec GestiLoc, tout est clair.</div><div class="L-tst-who"><strong>HOUNSA Gerard</strong><span>12 chambres -- Cotonou</span></div></div>
         <div class="L-tst"><div class="L-tst-q">"</div><div class="L-tst-txt">Les relances WhatsApp c'est genial. Mes locataires paient plus vite. L'appli est simple meme pour moi.</div><div class="L-tst-who"><strong>ASSOGBA Felicite</strong><span>8 chambres -- Porto-Novo</span></div></div>
         <div class="L-tst"><div class="L-tst-q">"</div><div class="L-tst-txt">3 maisons a gerer et tout sur un seul ecran. Les rapports mensuels m'aident pour ma comptabilite.</div><div class="L-tst-who"><strong>SOSSOU Mathieu</strong><span>24 chambres -- Parakou</span></div></div>
       </div>
 
-      <div class="L-final">
+      <div class="L-final sr">
         <h2>Pret a simplifier votre gestion ?</h2>
         <p>Gratuit. Sans connexion internet. Vos donnees restent sur votre telephone.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
@@ -1074,8 +1097,7 @@ document.addEventListener('DOMContentLoaded',function(){
     document.getElementById('auth-screen').style.display='flex';
     authTab('login');
   }else{
-    // Animate counters on landing
-    setTimeout(animateCounters,800);
+    setTimeout(animateCounters,1000);
   }
   document.addEventListener('keydown',function(e){
     if(e.key==='Enter'){
@@ -1085,19 +1107,47 @@ document.addEventListener('DOMContentLoaded',function(){
       }
     }
   });
+  // Ripple effect
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest('.btn-main,.btn-cta,.bp,.L-cta,.L-ghost,.qa-card');
+    if(!btn)return;
+    var r=document.createElement('span');r.className='ripple';
+    var rect=btn.getBoundingClientRect();
+    var sz=Math.max(rect.width,rect.height);
+    r.style.width=r.style.height=sz+'px';
+    r.style.left=(e.clientX-rect.left-sz/2)+'px';
+    r.style.top=(e.clientY-rect.top-sz/2)+'px';
+    btn.appendChild(r);setTimeout(function(){r.remove()},500);
+  });
+  // Scroll reveal
+  var srEls=document.querySelectorAll('.sr');
+  if(srEls.length&&'IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('visible');obs.unobserve(en.target)}});
+    },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+    srEls.forEach(function(el){obs.observe(el)});
+  }else{srEls.forEach(function(el){el.classList.add('visible')})}
+  // Form validation visual
+  ['signup-name','signup-city','signup-pin','signup-pin2'].forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    el.addEventListener('blur',function(){
+      var v=el.value.trim();if(!v){el.className='';return}
+      if(id==='signup-pin'){el.className=v.length>=4?'valid':'invalid';return}
+      if(id==='signup-pin2'){el.className=(v&&v===document.getElementById('signup-pin').value)?'valid':'invalid';return}
+      el.className='valid';
+    });
+  });
 });
 function animateCounters(){
-  var counters=document.querySelectorAll('.land-counter-val');
-  counters.forEach(function(el){
+  document.querySelectorAll('.L-ctr-v').forEach(function(el){
     var target=parseInt(el.getAttribute('data-target'));
-    var duration=1500;var start=0;var startTime=null;
+    var duration=1800;var startTime=null;
     function step(ts){
       if(!startTime)startTime=ts;
       var progress=Math.min((ts-startTime)/duration,1);
       var eased=1-Math.pow(1-progress,3);
       el.textContent=Math.floor(eased*target);
-      if(progress<1)requestAnimationFrame(step);
-      else el.textContent=target;
+      if(progress<1)requestAnimationFrame(step);else el.textContent=target;
     }
     requestAnimationFrame(step);
   });
