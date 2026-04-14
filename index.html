@@ -32,8 +32,8 @@
   --r1:6px;--r2:12px;--r3:18px;--r4:28px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:16px;scroll-behavior:smooth}
-body{font-family:var(--f2);background:var(--bg);color:var(--ink-800);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6;font-weight:500}
+html{font-size:16px;scroll-behavior:smooth;overflow-x:hidden;max-width:100vw}
+body{font-family:var(--f2);background:var(--bg);color:var(--ink-800);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6;font-weight:500;max-width:100vw;-webkit-text-size-adjust:100%}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(26,170,86,.03),transparent 50%)}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px}
 
@@ -70,11 +70,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Icon sizing fix - bigger, consistent */
 
-#app{position:relative;z-index:1}
-#main-app{display:none;min-height:100dvh;padding-bottom:72px}
-.ct{padding:1.5rem 1.25rem;max-width:960px;margin:0 auto}
+#app{position:relative;z-index:1;max-width:100vw;overflow-x:hidden}
+#main-app{display:none;min-height:100dvh;padding-bottom:80px}
+.ct{padding:1rem 0.85rem;max-width:960px;margin:0 auto}
 @media(min-width:600px){.ct{padding:1.75rem 1.5rem}}
-.page{display:none}.page.active{display:block;animation:pgIn .25s ease both}
+.page{display:none}.page.active{display:block;animation:pgIn .2s ease both}
 
 /* ============================
    LANDING - Cinematic
@@ -82,11 +82,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 #landing-screen{position:relative;overflow:hidden}
 .L{min-height:100dvh;display:flex;flex-direction:column}
 .L-canvas{position:fixed;inset:0;background:#060810;z-index:0}
-/* Gradient orbs */
-.L-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
-.L-orb.a{width:500px;height:500px;background:radial-gradient(circle,rgba(26,170,86,.20),transparent 70%);top:-10%;left:-5%;animation:glow 8s ease infinite}
-.L-orb.b{width:400px;height:400px;background:radial-gradient(circle,rgba(90,224,144,.10),transparent 70%);bottom:10%;right:-8%;animation:glow 10s ease 2s infinite}
-.L-orb.c{width:300px;height:300px;background:radial-gradient(circle,rgba(20,136,68,.12),transparent 70%);top:40%;left:50%;animation:glow 12s ease 4s infinite}
+/* Gradient orbs - GPU optimized */
+.L-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;will-change:transform,opacity}
+.L-orb.a{width:400px;height:400px;background:radial-gradient(circle,rgba(26,170,86,.15),transparent 70%);top:-10%;left:-5%;animation:glow 8s ease infinite}
+.L-orb.b{width:300px;height:300px;background:radial-gradient(circle,rgba(90,224,144,.08),transparent 70%);bottom:10%;right:-8%;animation:glow 10s ease 2s infinite}
+.L-orb.c{width:200px;height:200px;background:radial-gradient(circle,rgba(20,136,68,.10),transparent 70%);top:40%;left:50%;animation:glow 12s ease 4s infinite}
+/* Disable heavy animations on mobile for performance */
+@media(max-width:600px){
+  .L-orb{filter:blur(60px)}
+  .L-orb.c{display:none}
+  .L-particle{display:none}
+  .L-grid{display:none}
+  .L-phone{animation:none}
+}
 /* Orbiting particles */
 .L-particle{position:absolute;width:4px;height:4px;background:var(--em-400);border-radius:50%;top:50%;left:50%;opacity:.4}
 .L-particle.p1{animation:orbit 20s linear infinite;box-shadow:0 0 8px var(--em-400)}
@@ -222,9 +230,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .dnav-btn.active{color:#fff;background:linear-gradient(145deg,var(--em-600),var(--em-500));box-shadow:0 2px 12px rgba(26,170,86,.30)}
 .dnav-btn:hover:not(.active){color:rgba(255,255,255,.70);background:rgba(255,255,255,.04)}
 
-/* Bottom nav */
-#bnav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--em-800);display:flex;height:68px;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(0,0,0,.12)}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.35);background:none;border:none;cursor:pointer;font-family:var(--f1);transition:color .2s;-webkit-tap-highlight-color:transparent;position:relative}
+/* Bottom nav - mobile optimized */
+#bnav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--em-800);display:flex;height:64px;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(0,0,0,.12)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.35);background:none;border:none;cursor:pointer;font-family:var(--f1);transition:color .2s;-webkit-tap-highlight-color:transparent;position:relative;min-height:48px;padding:6px 2px}
 .nb.active{color:var(--em-300)}
 .nb.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;background:var(--em-400);border-radius:0 0 3px 3px}
 .nb svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:all .2s}
@@ -249,14 +257,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .bp.gold{background:var(--em-50);color:var(--em-700);border-color:rgba(20,136,68,.14)}.bp.gold:hover{background:var(--em-100)}
 
 /* Forms */
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:480px){.fg{grid-template-columns:1fr}}
-.ff{margin-bottom:14px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.fg{grid-template-columns:1fr;gap:10px}}
+.ff{margin-bottom:12px}
 .ff label{display:block;font-size:.6rem;color:var(--ink-400);margin-bottom:5px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-family:var(--f1)}
-.ff input,.ff select{width:100%;padding:12px 16px;font-size:.85rem;border:1.5px solid var(--bd2);border-radius:var(--r2);background:var(--sf2);color:var(--ink-800);font-family:var(--f2);font-weight:500;transition:all .25s}
+.ff input,.ff select{width:100%;padding:14px 16px;font-size:16px;border:1.5px solid var(--bd2);border-radius:var(--r2);background:var(--sf2);color:var(--ink-800);font-family:var(--f2);font-weight:500;transition:all .25s;min-height:48px;-webkit-appearance:none}
 .ff input:focus,.ff select:focus{outline:none;border-color:var(--em-400);box-shadow:0 0 0 4px rgba(26,170,86,.07)}
 .ff input::placeholder{color:var(--ink-300)}
 .ff-help{font-size:.68rem;color:var(--ink-300);margin-top:4px;font-style:italic}
+@media(min-width:600px){.ff input,.ff select{font-size:.85rem;padding:12px 16px;min-height:42px}}
 
 /* Section headers */
 .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px}
@@ -264,10 +273,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .sh-t::before{content:'';position:absolute;left:0;top:3px;bottom:3px;width:4px;background:linear-gradient(180deg,var(--em-400),var(--em-600));border-radius:2px}
 .sh-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1.75rem}
-@media(min-width:500px){.stats{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:800px){.stats{grid-template-columns:repeat(6,1fr)}}
+/* Stats - mobile first */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1.5rem}
+@media(min-width:500px){.stats{grid-template-columns:repeat(3,1fr);gap:10px}}
+@media(min-width:800px){.stats{grid-template-columns:repeat(6,1fr);gap:12px}}
 .st{background:var(--sf2);border-radius:var(--r2);padding:1.1rem;box-shadow:var(--s1);position:relative;overflow:hidden;transition:all .25s}
 .st:hover{box-shadow:var(--s2);transform:translateY(-2px)}
 .st::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
@@ -277,16 +286,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .st-v.ok{color:var(--ok)}.st-v.err{color:var(--err)}.st-v.wrn{color:var(--wrn)}.st-v.inf{color:var(--inf)}.st-v.gold{color:var(--em-600)}
 .st-u{font-size:.6rem;color:var(--ink-300);margin-top:5px;font-weight:700}
 
-/* Tables */
-.tb{background:var(--sf2);border-radius:var(--r2);overflow:hidden;overflow-x:auto;box-shadow:var(--s1)}
-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:500px}
-thead th{padding:12px 16px;text-align:left;font-weight:800;color:#fff;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;background:var(--em-800);white-space:nowrap;font-family:var(--f1)}
+/* Tables - mobile responsive */
+.tb{background:var(--sf2);border-radius:var(--r2);overflow:hidden;box-shadow:var(--s1)}
+.tb-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead th{padding:10px 12px;text-align:left;font-weight:800;color:#fff;font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;background:var(--em-800);white-space:nowrap;font-family:var(--f1)}
 thead th:first-child{border-radius:var(--r2) 0 0 0}thead th:last-child{border-radius:0 var(--r2) 0 0}
-tbody td{padding:12px 16px;color:var(--ink-700);border-bottom:1px solid var(--bd);vertical-align:middle}
+tbody td{padding:10px 12px;color:var(--ink-700);border-bottom:1px solid var(--bd);vertical-align:middle;font-size:.78rem}
 tbody tr:nth-child(even) td{background:rgba(0,0,0,.01)}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:rgba(26,170,86,.02)}
-.empty{padding:3.5rem;text-align:center;color:var(--ink-300);font-size:.85rem}
+.empty{padding:2.5rem 1rem;text-align:center;color:var(--ink-300);font-size:.82rem}
+@media(min-width:600px){table{font-size:.82rem}thead th{padding:12px 16px}tbody td{padding:12px 16px;font-size:.82rem}}
 
 /* Tags */
 .tg{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:.60rem;font-weight:800;letter-spacing:.03em;white-space:nowrap;font-family:var(--f1)}
@@ -301,13 +312,24 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
 .alrt.amber{background:var(--wrn-bg);border-left-color:var(--wrn);color:var(--wrn)}
 .alrt strong{font-weight:800}
 
-/* Modals */
-.mdl-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.50);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;z-index:100;padding:1rem}
+/* Modals - mobile-first */
+.mdl-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.50);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;z-index:100;padding:0}
 .mdl-bg.open{display:flex}
-.mdl{background:var(--sf2);border-radius:var(--r3);padding:2rem;width:520px;max-width:98vw;max-height:92vh;overflow-y:auto;box-shadow:var(--s4);position:relative;animation:fadeUp .25s both}
-.mdl::before{content:'';position:absolute;top:0;left:24px;right:24px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,var(--em-500),var(--em-300))}
-.mdl h2{font-family:var(--f1);font-size:1.05rem;font-weight:700;margin-bottom:1.5rem;color:var(--ink-800);padding-top:8px}
-.mdl-ft{display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;flex-wrap:wrap}
+.mdl{background:var(--sf2);border-radius:var(--r3) var(--r3) 0 0;padding:1.5rem 1.25rem 2rem;width:100%;max-height:88dvh;overflow-y:auto;box-shadow:var(--s4);position:relative;animation:slideFromBottom .3s both;-webkit-overflow-scrolling:touch}
+@keyframes slideFromBottom{from{transform:translateY(100%)}to{transform:none}}
+.mdl::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:40px;height:4px;border-radius:2px;background:var(--ink-200);margin-top:8px}
+.mdl h2{font-family:var(--f1);font-size:1rem;font-weight:700;margin-bottom:1.25rem;color:var(--ink-800);padding-top:16px;text-align:center}
+.mdl-ft{display:flex;gap:8px;justify-content:stretch;margin-top:1.25rem;flex-wrap:nowrap;position:sticky;bottom:0;background:var(--sf2);padding:12px 0 4px;border-top:1px solid var(--bd)}
+.mdl-ft .btn-cta,.mdl-ft .btn-ghost{flex:1;justify-content:center;min-height:46px;font-size:.88rem}
+/* Desktop modal */
+@media(min-width:600px){
+  .mdl-bg{align-items:center;padding:1rem}
+  .mdl{border-radius:var(--r3);max-width:520px;max-height:85vh;padding:2rem}
+  .mdl::before{display:none}
+  .mdl h2{text-align:left;padding-top:8px}
+  .mdl-ft{position:static;border-top:none;padding:0;margin-top:1.5rem;justify-content:flex-end}
+  .mdl-ft .btn-cta,.mdl-ft .btn-ghost{flex:none}
+}
 
 /* Room cards */
 .rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
@@ -331,8 +353,9 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
 .rc-oc{font-size:.78rem;color:var(--ink-600);margin-top:8px;font-weight:700}
 .rc-acts{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
 
-/* Quick actions */
-.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1.75rem}
+/* Quick actions - mobile stack */
+.quick-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:1.5rem}
+@media(min-width:480px){.quick-actions{grid-template-columns:repeat(3,1fr)}}
 .qa-card{background:var(--sf2);border-radius:var(--r2);padding:16px 18px;box-shadow:var(--s1);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:14px;border:1.5px solid transparent}
 .qa-card:hover{border-color:var(--em-300);box-shadow:var(--s2);transform:translateY(-2px)}
 .qa-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -414,22 +437,18 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
 .qt-ft{border-top:1px solid var(--ink-100);padding-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
 .qt-fl{font-size:9px;color:var(--ink-300)}.qt-fb{font-family:var(--fm);font-size:8px;color:var(--em-600);background:var(--em-50);border:1px solid rgba(26,170,86,.10);border-radius:var(--r1);padding:3px 8px}
 
-/* Tour */
-.tour-overlay{display:none;position:fixed;inset:0;z-index:9000;background:transparent}
-.tour-overlay.active{display:block}
-.tour-spotlight{position:fixed;z-index:9001;border-radius:var(--r2);box-shadow:0 0 0 4000px rgba(6,8,16,.75),0 0 0 4px var(--em-400),0 0 24px 6px rgba(26,170,86,.18);transition:all .35s cubic-bezier(.22,1,.36,1);pointer-events:none}
-.tour-tooltip{position:fixed;z-index:9002;background:var(--ink-700);border:1.5px solid var(--em-500);border-radius:var(--r3);padding:22px 24px;max-width:360px;width:calc(100vw - 40px);box-shadow:var(--s4);color:#fff;animation:fadeUp .25s both}
-.tour-tooltip::before{content:'';position:absolute;width:12px;height:12px;background:var(--ink-700);border:1.5px solid var(--em-500);transform:rotate(45deg)}
-.tour-tooltip.arrow-top::before{top:-7px;left:30px;border-bottom:none;border-right:none}
-.tour-tooltip.arrow-bottom::before{bottom:-7px;left:30px;border-top:none;border-left:none}
-.tour-step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(145deg,var(--em-500),var(--em-400));color:#fff;font-family:var(--fm);font-size:.72rem;font-weight:700;margin-bottom:12px;box-shadow:0 3px 12px rgba(26,170,86,.3)}
-.tour-title{font-family:var(--f1);font-size:1rem;font-weight:700;color:#fff;margin-bottom:8px}
-.tour-text{font-size:.82rem;color:var(--ink-200);line-height:1.7;margin-bottom:18px}
-.tour-actions{display:flex;gap:8px;justify-content:space-between;align-items:center}
-.tour-progress{font-size:.62rem;color:var(--ink-400);font-family:var(--fm)}
-.tour-skip{padding:8px 14px;font-size:.72rem;font-weight:600;font-family:var(--f2);border:1px solid rgba(255,255,255,.10);border-radius:var(--r1);background:transparent;color:var(--ink-200);cursor:pointer;transition:all .15s}
-.tour-skip:hover{border-color:rgba(255,255,255,.22);color:#fff}
-.tour-next{padding:8px 18px;font-size:.75rem;font-weight:700;font-family:var(--f1);border:none;border-radius:var(--r1);background:linear-gradient(145deg,var(--em-500),var(--em-400));color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(26,170,86,.3)}
+/* Tour - simple bottom sheet, cannot freeze screen */
+.tour-sheet{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--ink-700);border-radius:18px 18px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -8px 40px rgba(0,0,0,.3);transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);max-height:60vh;overflow-y:auto}
+.tour-sheet.open{transform:translateY(0)}
+.tour-sheet-bar{width:40px;height:4px;border-radius:2px;background:var(--ink-400);margin:0 auto 16px}
+.tour-sheet h3{font-family:var(--f1);font-size:1rem;font-weight:700;color:#fff;margin-bottom:6px}
+.tour-sheet p{font-size:.85rem;color:var(--ink-200);line-height:1.6;margin-bottom:16px}
+.tour-sheet-progress{height:3px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.tour-sheet-fill{height:100%;background:var(--em-400);border-radius:2px;transition:width .3s}
+.tour-sheet-btns{display:flex;gap:8px}
+.tour-sheet-btns button{flex:1;padding:12px;border-radius:10px;font-size:.88rem;font-weight:700;font-family:var(--f1);cursor:pointer;border:none}
+.tour-sheet .t-skip{background:rgba(255,255,255,.06);color:var(--ink-200)}
+.tour-sheet .t-next{background:var(--em-500);color:#fff;box-shadow:0 4px 16px rgba(26,170,86,.3)}
 
 /* Toast */
 .toast-container{position:fixed;top:80px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
@@ -444,7 +463,34 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
 [data-theme="dark"] .btn-ghost{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08);color:var(--ink-500)}
 
 @media print{body *{visibility:hidden}#pf{visibility:visible;position:fixed;inset:0;width:100%;height:100%;border:none}}
-@media(max-width:600px){.st-v{font-size:1.2rem}.hide-m{display:none!important}.acell{flex-direction:column;align-items:stretch}.acell .bp{justify-content:center}}
+@media(max-width:600px){
+  .st-v{font-size:1.1rem}
+  .hide-m{display:none!important}
+  .acell{flex-direction:column;align-items:stretch}
+  .acell .bp{justify-content:center;min-height:40px}
+  .sh{flex-direction:column;align-items:flex-start;gap:8px}
+  .sh-r{width:100%;flex-wrap:wrap}
+  .sh-r input[type="month"]{flex:1;min-width:0}
+  .btn-cta,.btn-ghost{width:100%;justify-content:center;min-height:46px}
+  .rg{grid-template-columns:1fr}
+  .rc-acts{flex-direction:column}
+  .rc-acts .bp{width:100%;justify-content:center;min-height:40px}
+  .topbar{height:54px;padding:0 .75rem}
+  .T-name{font-size:.9rem}
+  .T-btn{padding:5px 8px;font-size:.6rem}
+  .search-bar{font-size:16px;padding:12px 16px 12px 40px}
+  .rlc{flex-direction:column;align-items:flex-start}
+  .chart-bars{height:90px}
+  .land .L-hero{padding:1.5rem 1rem;min-height:auto}
+  .L-title{font-size:1.8rem}
+  .L-sub{font-size:.9rem;margin-bottom:24px}
+  .L-cta{width:100%;text-align:center;padding:16px}
+  .L-ghost{width:100%;text-align:center;padding:14px}
+  .L-stitle{font-size:1.3rem;margin:3rem auto 2rem}
+  .L-final{margin:3rem auto 0;padding:2rem 1.25rem}
+  .qt-dg{grid-template-columns:1fr}
+  .qt-hd{flex-direction:column;gap:12px}
+}
 :focus-visible{outline:2px solid var(--em-400);outline-offset:2px;border-radius:4px}
 </style>
 </head>
@@ -452,9 +498,16 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
 <iframe id="pf" style="display:none"></iframe>
 <div id="app">
 <div class="toast-container" id="toast-container"></div>
-<div class="tour-overlay" id="tour-overlay"></div>
-<div class="tour-spotlight" id="tour-spot" style="display:none"></div>
-<div class="tour-tooltip" id="tour-tip" style="display:none"></div>
+<div class="tour-sheet" id="tour-sheet">
+  <div class="tour-sheet-bar"></div>
+  <div class="tour-sheet-progress"><div class="tour-sheet-fill" id="tour-fill"></div></div>
+  <h3 id="tour-title"></h3>
+  <p id="tour-text"></p>
+  <div class="tour-sheet-btns">
+    <button class="t-skip" onclick="endTour()">Passer</button>
+    <button class="t-next" id="tour-next-btn" onclick="nextTour()">Suivant</button>
+  </div>
+</div>
 
 <!-- ==================== LANDING ==================== -->
 <div id="landing-screen">
@@ -472,7 +525,7 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
         <p class="L-sub" style="animation:fadeUp .6s .35s both">Fini les cahiers et les calculs. Chambres, locataires, loyers, quittances et relances WhatsApp -- tout depuis votre telephone.</p>
         <div class="L-cta-row" style="animation:fadeUp .6s .5s both">
           <button class="L-cta" onclick="showAuth()">Commencer gratuitement</button>
-          <button class="L-ghost" onclick="loadDemoFromLanding()">Explorer la demo</button>
+          <button class="L-ghost" onclick="showGuide()">Decouvrir l'application</button>
         </div>
       </div>
       <div class="L-right">
@@ -566,11 +619,41 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
         <p>Gratuit. Sans connexion internet. Vos donnees restent sur votre telephone.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
           <button class="L-cta" onclick="showAuth()">Creer mon compte</button>
-          <button class="L-ghost" onclick="loadDemoFromLanding()">Explorer la demo</button>
+          <button class="L-ghost" onclick="showGuide()">Decouvrir l'application</button>
         </div>
       </div>
     </div>
   </div>
+</div>
+</div>
+
+<!-- ==================== GUIDE DEMO ==================== -->
+<div id="guide-screen" style="display:none;position:fixed;inset:0;z-index:200;background:#0F1219;overflow-y:auto;-webkit-overflow-scrolling:touch">
+<div style="max-width:600px;margin:0 auto;padding:16px 12px 40px;font-family:var(--f2);color:#E8ECF4">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <button onclick="hideGuide()" style="background:none;border:1px solid #2E3548;border-radius:8px;padding:8px 14px;color:#8B95A8;cursor:pointer;font-size:.8rem;font-weight:600;font-family:var(--f2)">Retour</button>
+    <div style="font-size:.65rem;color:#00C48C;font-weight:700;text-transform:uppercase;letter-spacing:1px">Guide interactif</div>
+    <button onclick="hideGuide();loadDemoFromLanding()" style="background:#00C48C;border:none;border-radius:8px;padding:8px 14px;color:#fff;cursor:pointer;font-size:.8rem;font-weight:700;font-family:var(--f2)">Tester l'app</button>
+  </div>
+
+  <h2 style="text-align:center;font-size:1.3rem;font-weight:800;font-family:var(--f1);margin-bottom:4px">Comment utiliser GestiLoc Pro</h2>
+  <p style="text-align:center;font-size:.82rem;color:#8B95A8;margin-bottom:20px">5 etapes pour maitriser votre gestion locative</p>
+
+  <!-- Stepper dots -->
+  <div id="guide-stepper" style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px"></div>
+
+  <!-- Step content -->
+  <div id="guide-content" style="background:#232838;border-radius:14px;padding:18px;border:1px solid #2E3548;margin-bottom:16px"></div>
+
+  <!-- Navigation -->
+  <div style="display:flex;gap:10px">
+    <button id="guide-prev" onclick="guideNav(-1)" style="flex:1;padding:14px;border-radius:10px;border:1px solid #2E3548;background:transparent;color:#8B95A8;cursor:pointer;font-size:.9rem;font-weight:600;font-family:var(--f2)">Precedent</button>
+    <button id="guide-next" onclick="guideNav(1)" style="flex:1;padding:14px;border-radius:10px;border:none;background:#00C48C;color:#fff;cursor:pointer;font-size:.9rem;font-weight:700;font-family:var(--f2);box-shadow:0 4px 16px rgba(0,196,140,.3)">Suivant</button>
+  </div>
+
+  <div style="text-align:center;margin-top:16px;font-size:.7rem;color:#4a5568">GestiLoc Pro v12 -- Guide utilisateur</div>
 </div>
 </div>
 
@@ -628,16 +711,22 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
       <div id="alrt-bail" class="alrt amber" style="display:none"></div>
       <div class="stats" id="stats"></div>
       <div class="quick-actions" id="quick-actions">
-        <div class="qa-card" onclick="goPage('chambres');openMdl('mdl-room',null)"><div class="qa-icon green"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div><div class="qa-text">Ajouter une chambre</div><div class="qa-sub">Enregistrer un nouveau bien</div></div></div>
-        <div class="qa-card" onclick="goPage('locataires');openMdl('mdl-tenant',null)"><div class="qa-icon navy"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div><div><div class="qa-text">Nouveau locataire</div><div class="qa-sub">Associer a une chambre</div></div></div>
-        <div class="qa-card" onclick="goPage('loyers');openMdl('mdl-pay',null)"><div class="qa-icon amber"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><div><div class="qa-text">Enregistrer un paiement</div><div class="qa-sub">Loyer du mois en cours</div></div></div>
+        <div class="qa-card" onclick="openMdl('mdl-room',null)"><div class="qa-icon green"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div><div class="qa-text">Ajouter une chambre</div><div class="qa-sub">Enregistrer un nouveau bien</div></div></div>
+        <div class="qa-card" onclick="openMdl('mdl-tenant',null)"><div class="qa-icon navy"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div><div><div class="qa-text">Nouveau locataire</div><div class="qa-sub">Associer a une chambre</div></div></div>
+        <div class="qa-card" onclick="openMdl('mdl-pay',null)"><div class="qa-icon amber"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><div><div class="qa-text">Enregistrer un paiement</div><div class="qa-sub">Loyer du mois en cours</div></div></div>
+      </div>
+      <!-- First-time setup guide -->
+      <div id="setup-guide" style="display:none;background:var(--sf2);border-radius:var(--r2);padding:16px 18px;margin-bottom:16px;box-shadow:var(--s1);border:1.5px solid var(--em-100)">
+        <div style="font-family:var(--f1);font-size:.85rem;font-weight:700;color:var(--ink-800);margin-bottom:10px">Pour bien demarrer :</div>
+        <div id="setup-steps"></div>
       </div>
       <div class="chart-wrap" id="revenue-chart"></div>
       <div class="sh"><span class="sh-t">Derniers paiements</span></div>
+      <div style="font-size:.72rem;color:var(--ink-300);margin-bottom:8px;font-weight:500">Cliquez sur un nom pour voir son historique complet</div>
       <div class="tb" id="wrap-recent"><table><thead><tr><th>Locataire</th><th>Chambre</th><th>Montant</th><th>Mois</th><th>Statut</th></tr></thead><tbody id="rp"></tbody></table></div>
     </div>
     <div class="page" id="page-chambres"><div class="sh"><span class="sh-t">Mes chambres</span><button class="btn-cta" id="btn-add-room" onclick="openMdl('mdl-room',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="vertical-align:-2px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter</button></div><input class="search-bar" id="search-rooms" placeholder="Rechercher une chambre..." oninput="renderRooms()"/><div class="rg" id="rooms"></div></div>
-    <div class="page" id="page-locataires"><div class="sh"><span class="sh-t">Mes locataires</span><button class="btn-cta" id="btn-add-tenant" onclick="openMdl('mdl-tenant',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="vertical-align:-2px"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Ajouter</button></div><input class="search-bar" id="search-tenants" placeholder="Rechercher un locataire..." oninput="renderTenants()"/><div class="tb"><table><thead><tr><th>Nom</th><th>Telephone</th><th>Chambre</th><th>Entree</th><th>Fin bail</th><th>Caution</th><th class="hide-m">Piece</th><th>Actions</th></tr></thead><tbody id="tbd"></tbody></table></div></div>
+    <div class="page" id="page-locataires"><div class="sh"><span class="sh-t">Mes locataires</span><button class="btn-cta" id="btn-add-tenant" onclick="openMdl('mdl-tenant',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="vertical-align:-2px"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Ajouter</button></div><input class="search-bar" id="search-tenants" placeholder="Rechercher un locataire..." oninput="renderTenants()"/><div class="tb"><table><thead><tr><th>Nom</th><th class="hide-m">Telephone</th><th>Chambre</th><th class="hide-m">Entree</th><th>Fin bail</th><th class="hide-m">Caution</th><th class="hide-m">Piece</th><th>Actions</th></tr></thead><tbody id="tbd"></tbody></table></div></div>
     <div class="page" id="page-loyers"><div class="sh"><span class="sh-t">Loyers</span><div class="sh-r"><input type="month" id="rent-mo" style="padding:9px 14px;font-size:.8rem;border:1.5px solid var(--bd2);border-radius:var(--r2);background:var(--sf2);color:var(--ink-800);font-family:var(--f2);font-weight:500" onchange="renderRents()"/><button class="btn-ghost" onclick="document.getElementById('rent-mo').value='';renderRents()">Tout</button><button class="btn-cta" id="btn-add-pay" onclick="openMdl('mdl-pay',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="vertical-align:-2px"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> Paiement</button></div></div><div id="rent-sum" style="display:none;margin-bottom:1rem"></div><div class="tb"><table><thead><tr><th>Locataire</th><th>Chambre</th><th>Montant</th><th>Mois</th><th class="hide-m">Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rbody"></tbody></table></div></div>
     <div class="page" id="page-historique"><div class="sh"><span class="sh-t">Historique</span></div><select class="hist-sel" id="hsel" onchange="renderHist()"><option value="">-- Choisir un locataire --</option></select><div id="hcont"></div></div>
     <div class="page" id="page-rapport"><div class="sh"><span class="sh-t">Rapport mensuel</span><div class="sh-r"><input type="month" id="rpt-mo" style="padding:9px 14px;font-size:.8rem;border:1.5px solid var(--bd2);border-radius:var(--r2);background:var(--sf2);color:var(--ink-800);font-family:var(--f2);font-weight:500" onchange="renderRpt()"/><button class="btn-ghost" onclick="printRpt()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="6,9 6,2 18,2 18,9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>PDF</button></div></div><div id="rpt-cont"></div></div>
@@ -653,14 +742,21 @@ tbody tr:hover td{background:rgba(26,170,86,.02)}
   <button class="nb" id="nav-chambres" onclick="goPage('chambres')"><svg viewBox="0 0 24 24"><path d="M3 10.2L12 3l9 7.2V20a2 2 0 01-2 2H5a2 2 0 01-2-2V10.2z"/><rect x="9" y="14" width="6" height="8" rx="1"/></svg>Chambres</button>
   <button class="nb" id="nav-locataires" onclick="goPage('locataires')"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3.5"/><path d="M2 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M22 20c0-2.5-1.8-4.2-4.2-4.8"/></svg>Locataires</button>
   <button class="nb" id="nav-loyers" onclick="goPage('loyers')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 10h18"/></svg>Loyers</button>
-  <button class="nb" id="nav-more" onclick="goPage('relances')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>Plus</button>
+  <button class="nb" id="nav-more" onclick="toggleMore()"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>Plus</button>
 </nav>
+<!-- More menu -->
+<div id="more-menu" style="display:none;position:fixed;bottom:70px;right:8px;z-index:45;background:var(--sf2);border-radius:var(--r2);box-shadow:var(--s3);padding:6px;min-width:180px;animation:fadeUp .2s both">
+  <button onclick="goPage('historique');hideMore()" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:none;background:none;font-size:.85rem;font-weight:600;color:var(--ink-700);cursor:pointer;border-radius:8px;font-family:var(--f2);text-align:left" onmouseover="this.style.background='var(--ink-50)'" onmouseout="this.style.background='none'">Historique locataire</button>
+  <button onclick="goPage('rapport');hideMore()" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:none;background:none;font-size:.85rem;font-weight:600;color:var(--ink-700);cursor:pointer;border-radius:8px;font-family:var(--f2);text-align:left" onmouseover="this.style.background='var(--ink-50)'" onmouseout="this.style.background='none'">Rapport mensuel</button>
+  <button onclick="goPage('relances');hideMore()" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:none;background:none;font-size:.85rem;font-weight:600;color:var(--ink-700);cursor:pointer;border-radius:8px;font-family:var(--f2);text-align:left" onmouseover="this.style.background='var(--ink-50)'" onmouseout="this.style.background='none'">Relances</button>
+  <button onclick="goPage('parametres');hideMore()" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:none;background:none;font-size:.85rem;font-weight:600;color:var(--ink-700);cursor:pointer;border-radius:8px;font-family:var(--f2);text-align:left" onmouseover="this.style.background='var(--ink-50)'" onmouseout="this.style.background='none'">Reglages</button>
+</div>
 
 <!-- MODALS -->
 <div class="mdl-bg" id="mdl-room"><div class="mdl"><h2 id="mr-t">Ajouter une chambre</h2><div class="fg"><div class="ff"><label>Numero / Nom</label><input id="r-num" placeholder="Ex: Chambre 3"/></div><div class="ff"><label>Type</label><select id="r-type"><option>Chambre simple</option><option>Chambre double</option><option>Studio</option><option>Appartement</option><option>Boutique</option><option>Magasin</option><option>Autre</option></select></div></div><div class="fg"><div class="ff"><label>Loyer (FCFA)</label><input id="r-pr" type="number" placeholder="25000"/></div><div class="ff"><label>Caution (FCFA)</label><input id="r-dp" type="number" placeholder="50000"/></div></div><div class="ff"><label>Description</label><input id="r-desc" placeholder="Avec salle de bain..."/></div><input type="hidden" id="r-id"/><div class="mdl-ft"><button class="btn-ghost" onclick="closeMdl('mdl-room')">Annuler</button><button class="btn-cta" onclick="saveRoom()">Enregistrer</button></div></div></div>
 <div class="mdl-bg" id="mdl-tenant"><div class="mdl"><h2 id="mt-t">Ajouter un locataire</h2><div class="fg"><div class="ff"><label>Nom complet</label><input id="t-name"/></div><div class="ff"><label>Tel / WhatsApp</label><input id="t-phone" placeholder="229XXXXXXXX"/></div></div><div class="fg"><div class="ff"><label>Piece d'identite</label><input id="t-doc" placeholder="CNI / Passeport"/></div><div class="ff"><label>Chambre</label><select id="t-room"></select></div></div><div class="fg"><div class="ff"><label>Date entree</label><input id="t-start" type="date"/></div><div class="ff"><label>Fin bail</label><input id="t-end" type="date"/></div></div><div class="fg"><div class="ff"><label>Caution (FCFA)</label><input id="t-dep" type="number" placeholder="0"/></div><div class="ff"><label>Notes</label><input id="t-notes"/></div></div><input type="hidden" id="t-id"/><div class="mdl-ft"><button class="btn-ghost" onclick="closeMdl('mdl-tenant')">Annuler</button><button class="btn-cta" onclick="saveTenant()">Enregistrer</button></div></div></div>
 <div class="mdl-bg" id="mdl-pay"><div class="mdl"><h2 id="mp-t">Enregistrer un paiement</h2><div class="ff"><label>Locataire</label><select id="py-t" onchange="autoAmt()"></select></div><div class="fg"><div class="ff"><label>Montant (FCFA)</label><input id="py-a" type="number"/></div><div class="ff"><label>Statut</label><select id="py-s"><option value="paye">Paye</option><option value="en_attente">En attente</option><option value="impaye">Impaye</option></select></div></div><div class="fg"><div class="ff"><label>Mois</label><input id="py-m" type="month"/></div><div class="ff"><label>Date</label><input id="py-d" type="date"/></div></div><div class="ff"><label>Notes</label><input id="py-n"/></div><input type="hidden" id="py-id"/><div class="mdl-ft"><button class="btn-ghost" onclick="closeMdl('mdl-pay')">Annuler</button><button class="btn-ghost" onclick="prevQt()">Quittance</button><button class="btn-cta" onclick="savePay()">Enregistrer</button></div><div id="qt-prev" style="display:none;margin-top:1rem"></div></div></div>
-<div class="mdl-bg" id="mdl-qt"><div class="mdl" style="width:600px;padding:0;background:transparent;border:none;box-shadow:none"><div id="qt-full"></div><div class="mdl-ft" style="padding:0 2px;margin-top:12px"><button class="btn-ghost" onclick="closeMdl('mdl-qt')">Fermer</button><button class="btn-cta" onclick="printQt()">Imprimer</button></div></div></div>
+<div class="mdl-bg" id="mdl-qt"><div class="mdl" style="max-width:600px;padding:0;background:transparent;border:none;box-shadow:none"><div id="qt-full"></div><div class="mdl-ft" style="padding:8px;margin-top:8px"><button class="btn-ghost" onclick="closeMdl('mdl-qt')">Fermer</button><button class="btn-cta" onclick="printQt()">Imprimer / PDF</button></div></div></div>
 
 <script>
 'use strict';
@@ -724,84 +820,32 @@ function toast(msg,type){
   setTimeout(function(){t.style.animation='toastOut .3s ease forwards';setTimeout(function(){t.remove()},300)},3000);
 }
 
-// === GUIDED TOUR (improved) ===
+// === SIMPLE TOUR - Bottom sheet, cannot freeze ===
 var TOUR_STEPS=[
-  {target:'#dash-month',title:'Votre tableau de bord',text:'Bienvenue ! Ce dashboard vous montre l\'etat de votre parc locatif en temps reel : occupation, recettes du mois, et impayes a surveiller.',arrow:'top',page:'dashboard'},
-  {target:'#quick-actions',title:'Actions rapides',text:'Ces 3 boutons vous permettent d\'effectuer les actions les plus courantes sans naviguer. Un clic et c\'est fait !',arrow:'top',page:'dashboard'},
-  {target:'#btn-add-room',title:'Etape 1 : Vos chambres',text:'Commencez par ajouter vos chambres, studios ou appartements. Renseignez le loyer et la caution pour chacun.',arrow:'bottom',page:'chambres'},
-  {target:'#search-rooms',title:'Recherche rapide',text:'Quand vous aurez beaucoup de biens, tapez ici pour trouver instantanement une chambre par son nom ou type.',arrow:'top',page:'chambres'},
-  {target:'#btn-add-tenant',title:'Etape 2 : Vos locataires',text:'Ajoutez chaque locataire et associez-le a sa chambre. N\'oubliez pas le numero WhatsApp pour les relances automatiques !',arrow:'bottom',page:'locataires'},
-  {target:'#btn-add-pay',title:'Etape 3 : Les paiements',text:'Chaque mois, enregistrez les loyers recus ici. Vous pouvez aussi generer des quittances officielles a imprimer.',arrow:'bottom',page:'loyers'},
-  {target:'#wrap-recent',title:'Suivi automatique',text:'Les derniers paiements s\'affichent ici. Les retards et impayes sont signales automatiquement en haut de la page par des alertes colorees.',arrow:'top',page:'dashboard'},
-  {target:'#btn-tour',title:'Besoin d\'aide ?',text:'Ce bouton relance le guide a tout moment. N\'hesitez pas a l\'utiliser ! Bonne gestion de vos biens.',arrow:'top',page:'dashboard'}
+  {title:'Bienvenue',text:'Votre tableau de bord affiche les stats du mois : chambres, occupation, recettes et impayes. Tout en un coup d\'oeil.',page:'dashboard'},
+  {title:'Actions rapides',text:'Ces 3 boutons ajoutent une chambre, un locataire ou un paiement sans naviguer. Un clic et le formulaire s\'ouvre directement.',page:'dashboard'},
+  {title:'Vos chambres',text:'Chaque chambre a une bordure verte (libre) ou orange (occupee). Cliquez "+ Ajouter" pour enregistrer un bien avec son loyer.',page:'chambres'},
+  {title:'Vos locataires',text:'Ajoutez chaque locataire avec son numero WhatsApp. Cliquez sur un nom pour voir son historique complet de paiements.',page:'locataires'},
+  {title:'Les paiements',text:'Enregistrez chaque loyer. Le montant se remplit automatiquement. Generez des quittances signables et imprimables.',page:'loyers'},
+  {title:'C\'est tout !',text:'Dans "Plus" : historique, relances WhatsApp, rapports mensuels. Cliquez "Guide" dans la barre du haut pour relancer ce guide.',page:'dashboard'}
 ];
 var tourIdx=0;
-
-function startTour(){
-  tourIdx=0;
-  showTourStep();
-}
-
+function startTour(){tourIdx=0;document.getElementById('tour-sheet').classList.add('open');showTourStep()}
 function showTourStep(){
   if(tourIdx>=TOUR_STEPS.length){endTour();return}
-  var step=TOUR_STEPS[tourIdx];
-  // Navigate to the right page
-  if(step.page){
-    var pg=step.page;
-    goPage(pg);
-    // For desktop nav
-    document.querySelectorAll('.dnav-btn').forEach(function(b,i){b.classList.toggle('active',b.textContent.toLowerCase().indexOf(pg)>-1||i===0&&pg==='dashboard')});
-  }
-  setTimeout(function(){
-    var el=document.querySelector(step.target);
-    if(!el){tourIdx++;showTourStep();return}
-    var r=el.getBoundingClientRect();
-    var ov=document.getElementById('tour-overlay');
-    var sp=document.getElementById('tour-spot');
-    var tp=document.getElementById('tour-tip');
-
-    ov.classList.add('active');
-    sp.style.display='block';
-    sp.style.top=(r.top-6)+'px';sp.style.left=(r.left-6)+'px';
-    sp.style.width=(r.width+12)+'px';sp.style.height=(r.height+12)+'px';
-
-    tp.style.display='block';
-    tp.className='tour-tooltip arrow-'+step.arrow;
-
-    // Smart positioning: check available space
-    var tipH=220;// estimated height
-    var spaceBelow=window.innerHeight-r.bottom;
-    var spaceAbove=r.top;
-    var tipTop;
-    if(spaceBelow>tipH+20){
-      tipTop=r.bottom+14;
-      tp.className='tour-tooltip arrow-top';
-    }else if(spaceAbove>tipH+20){
-      tipTop=r.top-tipH-14;
-      tp.className='tour-tooltip arrow-bottom';
-    }else{
-      // Center vertically
-      tipTop=Math.max(20,Math.min(window.innerHeight/2-tipH/2,window.innerHeight-tipH-20));
-      tp.className='tour-tooltip arrow-top';
-    }
-    var tipLeft=Math.max(12,Math.min(r.left,window.innerWidth-380));
-    tp.style.top=tipTop+'px';
-    tp.style.left=tipLeft+'px';
-    tp.innerHTML='<div class="tour-step-num">'+(tourIdx+1)+'</div><div class="tour-title">'+step.title+'</div><div class="tour-text">'+step.text+'</div><div style="height:3px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:14px;overflow:hidden"><div style="height:100%;width:'+Math.round(((tourIdx+1)/TOUR_STEPS.length)*100)+'%;background:var(--grn-400);border-radius:2px;transition:width .3s"></div></div><div class="tour-actions"><span class="tour-progress">Etape '+(tourIdx+1)+' sur '+TOUR_STEPS.length+'</span><div style="display:flex;gap:8px"><button class="tour-skip" onclick="endTour()">Passer</button><button class="tour-next" onclick="nextTour()">'+(tourIdx<TOUR_STEPS.length-1?'Suivant &rarr;':'Terminer &check;')+'</button></div></div>';
-  },150);
+  var s=TOUR_STEPS[tourIdx];
+  if(s.page)goPage(s.page);
+  document.getElementById('tour-title').textContent=(tourIdx+1)+'/'+TOUR_STEPS.length+' — '+s.title;
+  document.getElementById('tour-text').textContent=s.text;
+  document.getElementById('tour-fill').style.width=Math.round(((tourIdx+1)/TOUR_STEPS.length)*100)+'%';
+  document.getElementById('tour-next-btn').textContent=tourIdx<TOUR_STEPS.length-1?'Suivant':'Terminer';
 }
-
 function nextTour(){tourIdx++;showTourStep()}
-function endTour(){
-  document.getElementById('tour-overlay').classList.remove('active');
-  document.getElementById('tour-spot').style.display='none';
-  document.getElementById('tour-tip').style.display='none';
-  D.config.tourDone=true;sv();
-  goPage('dashboard');
-}
+function endTour(){document.getElementById('tour-sheet').classList.remove('open');D.config.tourDone=true;sv();goPage('dashboard');toast('Guide termine !','ok')}
+
 
 // Navigation screens
-function showLanding(){document.getElementById('landing-screen').style.display='block';document.getElementById('auth-screen').style.display='none';document.getElementById('main-app').style.display='none';document.getElementById('bnav').style.display='none'}
+function showLanding(){document.getElementById('landing-screen').style.display='block';document.getElementById('auth-screen').style.display='none';document.getElementById('main-app').style.display='none';document.getElementById('bnav').style.display='none';document.getElementById('guide-screen').style.display='none';document.getElementById('more-menu').style.display='none'}
 function showAuth(){document.getElementById('landing-screen').style.display='none';document.getElementById('auth-screen').style.display='flex';if(D.config.onboarded)authTab('login');else authTab('signup')}
 function authTab(tab){
   document.getElementById('tab-login').classList.toggle('active',tab==='login');
@@ -858,10 +902,10 @@ function resetPassword(){
 function showApp(){
   document.getElementById('landing-screen').style.display='none';
   document.getElementById('auth-screen').style.display='none';
+  document.getElementById('guide-screen').style.display='none';
   document.getElementById('main-app').style.display='block';
   document.getElementById('bnav').style.display='flex';
   initApp();
-  if(!D.config.tourDone&&D.rooms.length>0)setTimeout(startTour,800);
 }
 function logout(){
   document.getElementById('main-app').style.display='none';
@@ -870,6 +914,7 @@ function logout(){
 }
 function loadDemoFromLanding(){
   document.getElementById('landing-screen').style.display='none';
+  document.getElementById('guide-screen').style.display='none';
   loadDemo();
 }
 function loadDemoFromAuth(){
@@ -921,9 +966,8 @@ function loadDemo(){
     {id:315,tenantId:205,amount:15000,month:cm,date:'',status:'en_attente',notes:''}
   ];
   sv();showApp();
-  toast('Mode demo : 6 chambres, 5 locataires, 15 paiements','ok');
-  setTimeout(function(){toast('Explorez librement ! Reinitialisez dans Reglages.','info')},2000);
-  setTimeout(startTour,3500);
+  toast('Demo chargee : 6 chambres, 5 locataires, 15 paiements','ok');
+  setTimeout(function(){toast('Cliquez sur les noms pour voir l\'historique','info')},2500);
 }
 
 function initApp(){var d=new Date();document.getElementById('td-date').textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});document.getElementById('tb-title').textContent=oN();document.getElementById('tb-sub').textContent='Proprietaire bailleur';document.getElementById('rpt-mo').value=cM();document.getElementById('rent-mo').value=cM();document.getElementById('p-name').value=D.config.name||'';document.getElementById('p-phone').value=D.config.phone||'';document.getElementById('p-city').value=D.config.city||'';document.getElementById('p-addr').value=D.config.address||'';
@@ -963,7 +1007,7 @@ function saveRoom(){var n=document.getElementById('r-num').value.trim(),tp=docum
 // Check duplicate name
 var dup=D.rooms.find(function(r){return r.num.toLowerCase()===n.toLowerCase()&&r.id!=eid});
 if(dup)return toast('Une chambre "'+n+'" existe deja','err');
-if(eid){var i=D.rooms.findIndex(function(r){return r.id==eid});if(i>-1)Object.assign(D.rooms[i],{num:n,type:tp,price:pr,deposit:dp,desc:ds})}else{D.rooms.push({id:uid(),num:n,type:tp,price:pr,deposit:dp,desc:ds})}sv();closeMdl('mdl-room');renderAll();toast(eid?'Chambre modifiee':'Chambre ajoutee avec succes','ok')}
+if(eid){var i=D.rooms.findIndex(function(r){return r.id==eid});if(i>-1)Object.assign(D.rooms[i],{num:n,type:tp,price:pr,deposit:dp,desc:ds})}else{D.rooms.push({id:uid(),num:n,type:tp,price:pr,deposit:dp,desc:ds})}sv();closeMdl('mdl-room');renderAll();toast(eid?'Chambre modifiee':'Chambre ajoutee avec succes','ok');if(!eid&&D.tenants.length===0)setTimeout(function(){toast('Prochaine etape : ajoutez un locataire','info')},1500)}
 function editRoom(i){var r=rById(i);if(r)openMdl('mdl-room',r)}
 function delRoom(i){
   // Check if tenant is assigned
@@ -976,7 +1020,7 @@ var existing=D.tenants.find(function(t){return t.roomId==ri&&t.id!=eid});
 if(existing){return toast('Cette chambre est deja occupee par '+existing.name+'. Liberez-la d\'abord.','err')}
 // Validate dates
 if(sd&&ed&&ed<sd){return toast('La fin de bail ne peut pas etre avant l\'entree','err')}
-if(eid){var i=D.tenants.findIndex(function(t){return t.id==eid});if(i>-1)Object.assign(D.tenants[i],{name:n,phone:ph,idDoc:doc,roomId:ri,startDate:sd,endDate:ed,deposit:dp,notes:nt})}else{D.tenants.push({id:uid(),name:n,phone:ph,idDoc:doc,roomId:ri,startDate:sd,endDate:ed,deposit:dp,notes:nt})}sv();closeMdl('mdl-tenant');renderAll();toast(eid?'Locataire modifie':'Locataire ajoute avec succes','ok')}
+if(eid){var i=D.tenants.findIndex(function(t){return t.id==eid});if(i>-1)Object.assign(D.tenants[i],{name:n,phone:ph,idDoc:doc,roomId:ri,startDate:sd,endDate:ed,deposit:dp,notes:nt})}else{D.tenants.push({id:uid(),name:n,phone:ph,idDoc:doc,roomId:ri,startDate:sd,endDate:ed,deposit:dp,notes:nt})}sv();closeMdl('mdl-tenant');renderAll();toast(eid?'Locataire modifie':'Locataire ajoute avec succes','ok');if(!eid&&D.payments.length===0)setTimeout(function(){toast('Prochaine etape : enregistrez un paiement','info')},1500)}
 function editTenant(i){var t=tById(i);if(t)openMdl('mdl-tenant',t)}
 function delTenant(i){
   var t=tById(i);if(!t)return;
@@ -1007,16 +1051,54 @@ function delPay(i){if(!confirm('Supprimer ce paiement ?'))return;D.payments=D.pa
 function waR(i){var t=tById(i);if(!t||!t.phone)return alert('Numero non renseigne.');var m=cM(),r=rById(t.roomId),l=r?fC(r.price)+' FCFA':'',msg='Bonjour '+t.name+',\n\nVotre loyer de '+l+' pour '+rNm(t.roomId)+' -- mois de '+fMo(m)+' -- est en attente.\n\nMerci de regulariser.\n\nCordialement,\n'+oN();window.open('https://wa.me/'+t.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank')}
 
 // Quittance
-function bQt(t,ms,dp,am,ref,doc){var r=rById(t.roomId),ly=r?fC(r.price):'-',td=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});return'<div class="qt"><div class="qt-hd"><div><div class="qt-on">'+oN()+'</div><div class="qt-or">Proprietaire bailleur</div><div class="qt-oa">'+oA()+'</div></div><div><div class="qt-dl">Document officiel</div><div class="qt-dt">Quittance<br/>de loyer</div><div class="qt-ref">'+ref+'</div></div></div><div class="qt-bd"><div class="qt-sl">Locataire</div><div class="qt-tb"><div class="qt-tn">'+t.name+'</div><div class="qt-tm"><span>'+rNm(t.roomId)+'</span>'+(doc?'<span>Piece : '+doc+'</span>':'')+(t.phone?'<span>'+t.phone+'</span>':'')+'</div></div><div class="qt-sl">Detail du paiement</div><div class="qt-dg"><div class="qt-dc"><div class="qt-dk">Periode</div><div class="qt-dv">'+ms+'</div></div><div class="qt-dc"><div class="qt-dk">Date paiement</div><div class="qt-dv">'+(dp||'Non renseignee')+'</div></div><div class="qt-dc"><div class="qt-dk">Loyer mensuel</div><div class="qt-dv">'+ly+' FCFA</div></div><div class="qt-dc"><div class="qt-dk">Type</div><div class="qt-dv">'+(r?r.type:'-')+'</div></div></div><div class="qt-sl">Montant recu</div><div class="qt-ab"><div class="qt-al">Somme percue</div><div><span class="qt-av">'+am+'</span><span class="qt-ac">FCFA</span></div></div><div class="qt-sigs"><div class="qt-sig"><div class="qt-sig-l">Signature locataire</div><div class="qt-sig-n">'+t.name+'</div></div><div class="qt-sig"><div class="qt-sig-l">Signature bailleur</div><div class="qt-sig-n">'+oN()+'</div></div></div><div class="qt-ft"><div class="qt-fl">Emis le '+td+'</div><div class="qt-fb">GestiLoc Pro v7</div></div></div></div>'}
-function prevQt(){var ti=document.getElementById('py-t').value,am=parseInt(document.getElementById('py-a').value)||0,mo=document.getElementById('py-m').value,da=document.getElementById('py-d').value;if(!ti||!am||!mo)return;var t=tById(ti);if(!t)return;var z=document.getElementById('qt-prev');z.innerHTML=bQt(t,fMo(mo),da,fC(am),'APERCU',t.idDoc);z.style.display='block'}
-function showQt(i){var p=D.payments.find(function(x){return x.id==i});if(!p)return;var t=tById(p.tenantId);if(!t)return;document.getElementById('qt-full').innerHTML=bQt(t,fMo(p.month),p.date,fC(p.amount),'QT-'+String(i).slice(-6).toUpperCase(),t.idDoc);openMdl('mdl-qt',null)}
+function bQt(t,ms,dp,am,ref,doc){var r=rById(t.roomId),ly=r?fC(r.price):'-',td=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+return'<div class="qt"><div class="qt-hd"><div><div class="qt-on">'+oN()+'</div><div class="qt-or">Proprietaire bailleur</div><div class="qt-oa">'+oA()+'</div></div><div style="text-align:right"><div class="qt-dl">Quittance de loyer</div><div style="font-family:var(--f1);font-size:24px;font-weight:800;color:var(--em-300);margin:4px 0">N '+ref+'</div><div style="font-size:9px;color:rgba(255,255,255,.35)">'+td+'</div></div></div><div class="qt-bd"><div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap"><div style="flex:1;min-width:140px;background:var(--em-50);border:1px solid rgba(26,170,86,.10);border-radius:10px;padding:12px 14px"><div class="qt-sl">Locataire</div><div class="qt-tn">'+t.name+'</div><div class="qt-tm"><span>'+rNm(t.roomId)+'</span>'+(t.phone?'<span>'+t.phone+'</span>':'')+'</div></div><div style="flex:1;min-width:140px;background:var(--ink-50);border:1px solid var(--ink-100);border-radius:10px;padding:12px 14px"><div class="qt-sl">Bien loue</div><div style="font-size:13px;font-weight:700;color:var(--ink-800)">'+(r?r.num:'--')+'</div><div style="font-size:10px;color:var(--ink-400)">'+(r?r.type:'')+'</div></div></div><div class="qt-sl">Detail du paiement</div><div class="qt-dg"><div class="qt-dc"><div class="qt-dk">Periode</div><div class="qt-dv">'+ms+'</div></div><div class="qt-dc"><div class="qt-dk">Date paiement</div><div class="qt-dv">'+(dp?fD(dp):'--')+'</div></div><div class="qt-dc"><div class="qt-dk">Loyer mensuel</div><div class="qt-dv">'+ly+' F</div></div><div class="qt-dc"><div class="qt-dk">Caution</div><div class="qt-dv">'+(t.deposit?fC(t.deposit)+' F':'--')+'</div></div></div><div style="background:linear-gradient(145deg,var(--em-50),#f0faf4);border:2px solid var(--em-200);border-radius:10px;padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><div style="font-size:9px;color:var(--em-700);font-weight:700;text-transform:uppercase;letter-spacing:.1em">Montant recu</div></div><div><span style="font-family:var(--f1);font-size:28px;font-weight:800;color:var(--ink-800)">'+am+'</span><span style="font-size:12px;color:var(--em-600);margin-left:5px;font-weight:700">FCFA</span></div></div><div class="qt-sl">Signatures</div><div class="qt-sigs"><div class="qt-sig"><div class="qt-sig-l">Signature du locataire</div><canvas id="sig-tenant" width="240" height="90" style="border:1px dashed var(--ink-200);border-radius:8px;background:#fafbfc;cursor:crosshair;touch-action:none;width:100%;height:90px" class="sig-pad"></canvas><div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center"><div class="qt-sig-n">'+t.name+'</div><button class="bp inf" onclick="clearSig(\'sig-tenant\')" style="font-size:9px;padding:3px 8px">Effacer</button></div></div><div class="qt-sig"><div class="qt-sig-l">Signature du bailleur</div><canvas id="sig-owner" width="240" height="90" style="border:1px dashed var(--ink-200);border-radius:8px;background:#fafbfc;cursor:crosshair;touch-action:none;width:100%;height:90px" class="sig-pad"></canvas><div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center"><div class="qt-sig-n">'+oN()+'</div><button class="bp inf" onclick="clearSig(\'sig-owner\')" style="font-size:9px;padding:3px 8px">Effacer</button></div></div></div><div class="qt-ft"><div class="qt-fl">Emis le '+td+'<br/>Ce document fait foi de quittance de loyer</div><div class="qt-fb">GestiLoc Pro</div></div></div></div>'}
+
+// Signature pad system
+var sigDrawing=false;
+function initSigPads(){
+  document.querySelectorAll('.sig-pad').forEach(function(c){
+    var ctx=c.getContext('2d');ctx.strokeStyle='#1a1e28';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+    function pos(e){var rect=c.getBoundingClientRect(),x,y;if(e.touches){x=e.touches[0].clientX-rect.left;y=e.touches[0].clientY-rect.top}else{x=e.clientX-rect.left;y=e.clientY-rect.top}return{x:x*(c.width/rect.width),y:y*(c.height/rect.height)}}
+    c.addEventListener('mousedown',function(e){sigDrawing=true;var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});
+    c.addEventListener('mousemove',function(e){if(!sigDrawing)return;var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});
+    c.addEventListener('mouseup',function(){sigDrawing=false});
+    c.addEventListener('mouseleave',function(){sigDrawing=false});
+    c.addEventListener('touchstart',function(e){e.preventDefault();sigDrawing=true;var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)},{passive:false});
+    c.addEventListener('touchmove',function(e){e.preventDefault();if(!sigDrawing)return;var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()},{passive:false});
+    c.addEventListener('touchend',function(){sigDrawing=false});
+  });
+}
+function clearSig(id){var c=document.getElementById(id);if(c){c.getContext('2d').clearRect(0,0,c.width,c.height)}}
+
+function showQt(i){var p=D.payments.find(function(x){return x.id==i});if(!p)return;var t=tById(p.tenantId);if(!t)return;document.getElementById('qt-full').innerHTML=bQt(t,fMo(p.month),p.date,fC(p.amount),'QT-'+String(i).slice(-6).toUpperCase(),t.idDoc);openMdl('mdl-qt',null);setTimeout(initSigPads,300)}
+function prevQt(){var ti=document.getElementById('py-t').value,am=parseInt(document.getElementById('py-a').value)||0,mo=document.getElementById('py-m').value,da=document.getElementById('py-d').value;if(!ti||!am||!mo)return;var t=tById(ti);if(!t)return;var z=document.getElementById('qt-prev');z.innerHTML=bQt(t,fMo(mo),da,fC(am),'APERCU',t.idDoc);z.style.display='block';setTimeout(initSigPads,300)}
 
 // Print
 var PF='https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap';
 var QPC='@page{margin:14mm;size:A4}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Nunito,sans-serif;background:#fff;color:#1e232c}.qt{font-family:Nunito,sans-serif}.qt-hd{background:#1b2a4a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:22px 26px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}.qt-on{font-size:16px;font-weight:700;color:#fff}.qt-or{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.14em}.qt-oa{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px}.qt-dl{font-size:8px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.14em;text-align:right;margin-bottom:3px}.qt-dt{font-family:Sora,sans-serif;font-size:20px;font-weight:700;color:#28b05a;line-height:1.2;text-align:right}.qt-ref{font-family:"Space Mono",monospace;font-size:9px;color:#50d080;margin-top:4px;text-align:right}.qt-bd{padding:20px 26px}.qt-sl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:#2e4578;margin-bottom:7px}.qt-tb{border:1px solid #e2e7ee;border-radius:6px;padding:10px 14px;margin-bottom:14px;background:#f3f5f8}.qt-tn{font-size:15px;font-weight:700;color:#1b2a4a;margin-bottom:3px}.qt-tm{font-size:11px;color:#65738e;display:flex;gap:12px;flex-wrap:wrap}.qt-dg{display:grid;grid-template-columns:1fr 1fr;border:1px solid #e2e7ee;border-radius:6px;overflow:hidden;margin-bottom:14px}.qt-dc{padding:9px 13px;border-bottom:1px solid #f3f5f8;border-right:1px solid #f3f5f8}.qt-dc:nth-child(even){border-right:none}.qt-dc:nth-last-child(-n+2){border-bottom:none}.qt-dk{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#8290a8;margin-bottom:2px}.qt-dv{font-size:13px;font-weight:700;color:#2a3140}.qt-ab{background:#fefaf0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border:1px solid rgba(36,143,68,.15);border-radius:6px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.qt-al{font-size:11px;color:#1a5c2e;font-weight:600}.qt-av{font-family:Sora,sans-serif;font-size:25px;font-weight:800;color:#1b2a4a;letter-spacing:-.02em}.qt-ac{font-size:12px;color:#1f7a3a;margin-left:4px}.qt-sigs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px}.qt-sig{border-top:1px solid #c5ced9;padding-top:7px}.qt-sig-l{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#a3b0c4;margin-bottom:26px}.qt-sig-n{font-size:11px;color:#4e5a72}.qt-ft{border-top:1px solid #e2e7ee;padding-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}.qt-fl{font-size:8px;color:#a3b0c4}.qt-fb{font-family:"Space Mono",monospace;font-size:7px;color:#2e4578;background:#e8eff8;border:1px solid #c0d4ec;border-radius:3px;padding:2px 6px}';
 var RPC='@page{margin:16mm;size:A4}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Nunito,sans-serif;background:#fff;color:#1e232c;font-size:13px}.rph{border-bottom:2px solid #209048;padding-bottom:12px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end}.rph-t{font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#1b2a4a}.rph-m{font-size:13px;font-weight:700;margin-top:2px}.rph-o{font-size:11px;color:#248f44;font-weight:700}.rph-d{font-size:9px;color:#8290a8;margin-top:2px}.rs{margin-bottom:16px}.rst{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#2e4578;margin-bottom:7px;border-bottom:.5px solid #e2e7ee;padding-bottom:4px}.kg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}.ki{border:1px solid #e2e7ee;border-radius:6px;padding:9px 13px}.kl{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#8290a8;margin-bottom:3px}.kv{font-size:19px;font-weight:700;font-family:"Space Mono",monospace}.kv.g{color:#0f8a5f}.kv.r{color:#c03030}.ku{font-size:9px;color:#8290a8}.rr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:.5px solid #e2e7ee;font-size:12px}.rr:last-child{border-bottom:none}.rl{color:#4e5a72}.rv{font-weight:700;font-family:"Space Mono",monospace}.rv.g{color:#0f8a5f}.rv.r{color:#c03030}.rv.a{color:#b07800}.tg{display:inline-block;padding:2px 7px;border-radius:4px;font-size:8px;font-weight:700}.tg-ok{background:#e6f5ee;color:#0a5c3a}.tg-wrn{background:#fef4d8;color:#6e5500}.tg-err{background:#fce8e8;color:#801818}.rft{margin-top:18px;border-top:1px solid #e2e7ee;padding-top:10px;font-size:8px;color:#a3b0c4;display:flex;justify-content:space-between}';
 
-function printQt(){var h=document.getElementById('qt-full').innerHTML;if(!h)return;prntVia(h,QPC,'Quittance -- GestiLoc Pro')}
+function printQt(){
+  // Convert signature canvases to images for print
+  var container=document.getElementById('qt-full');
+  var canvases=container.querySelectorAll('canvas.sig-pad');
+  canvases.forEach(function(c){
+    var img=document.createElement('img');
+    img.src=c.toDataURL('image/png');
+    img.style.width='100%';img.style.height='90px';img.style.border='1px solid #e2e8f0';img.style.borderRadius='8px';
+    c.parentNode.replaceChild(img,c);
+  });
+  // Remove effacer buttons for print
+  var btns=container.querySelectorAll('.bp.inf');
+  btns.forEach(function(b){b.style.display='none'});
+  var h=container.innerHTML;
+  prntVia(h,QPC,'Quittance -- GestiLoc Pro');
+  // Restore canvases (re-render)
+  setTimeout(function(){
+    var p=D.payments.find(function(x){return'QT-'+String(x.id).slice(-6).toUpperCase()===container.querySelector('.qt-dt')});
+  },500);
+}
 
 function printRpt(){var mo=document.getElementById('rpt-mo').value;if(!mo)return alert('Selectionnez un mois.');var ms=fMo(mo),ps=D.payments.filter(function(p){return p.month===mo}),pd=ps.filter(function(p){return p.status==='paye'}),up=ps.filter(function(p){return p.status==='impaye'}),pe=ps.filter(function(p){return p.status==='en_attente'}),tc=pd.reduce(function(s,p){return s+p.amount},0),tu=up.reduce(function(s,p){return s+p.amount},0),tp=pe.reduce(function(s,p){return s+p.amount},0),ex=D.tenants.reduce(function(s,t){var r=rById(t.roomId);return s+(r?r.price:0)},0),rt=ex>0?Math.round((tc/ex)*100):0,seen={},oi=[];D.tenants.forEach(function(t){if(D.rooms.find(function(r){return r.id==t.roomId})&&!seen[t.roomId]){seen[t.roomId]=1;oi.push(t.roomId)}});var td=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}),bd=function(s){return s==='paye'?'<span class="tg tg-ok">Paye</span>':s==='en_attente'?'<span class="tg tg-wrn">En attente</span>':'<span class="tg tg-err">Impaye</span>'},dr='';D.tenants.forEach(function(t){var r=rById(t.roomId),p=ps.find(function(x){return x.tenantId==t.id}),st=p?bd(p.status):'<span class="tg tg-err">Non enregistre</span>',mt=p?fC(p.amount)+' FCFA':(r?fC(r.price)+' FCFA':'--');dr+='<div class="rr"><span class="rl">'+t.name+' <span style="color:#a3b0c4;font-size:10px">-- '+rNm(t.roomId)+'</span></span><span style="display:flex;align-items:center;gap:8px">'+st+'<span class="rv">'+mt+'</span></span></div>'});var h='<div class="rph"><div><div class="rph-t">Rapport mensuel</div><div class="rph-m">'+ms+'</div></div><div style="text-align:right"><div class="rph-o">'+oN()+'</div><div class="rph-d">Genere le '+td+'</div></div></div><div class="rs"><div class="rst">Synthese financiere</div><div class="kg"><div class="ki"><div class="kl">Loyers attendus</div><div class="kv">'+fC(ex)+'</div><div class="ku">FCFA</div></div><div class="ki"><div class="kl">Percus</div><div class="kv g">'+fC(tc)+'</div><div class="ku">FCFA</div></div><div class="ki"><div class="kl">En attente</div><div class="kv">'+fC(tp)+'</div><div class="ku">FCFA</div></div><div class="ki"><div class="kl">Impayes</div><div class="kv r">'+fC(tu)+'</div><div class="ku">FCFA</div></div></div><div class="rr"><span class="rl">Taux recouvrement</span><span class="rv '+(rt>=80?'g':'r')+'">'+rt+'%</span></div></div><div class="rs"><div class="rst">Detail par locataire</div>'+dr+'</div><div class="rs"><div class="rst">Occupation</div><div class="rr"><span class="rl">Chambres totales</span><span class="rv">'+D.rooms.length+'</span></div><div class="rr"><span class="rl">Occupees</span><span class="rv g">'+oi.length+'</span></div><div class="rr"><span class="rl">Libres</span><span class="rv">'+(D.rooms.length-oi.length)+'</span></div></div><div class="rft"><span>GestiLoc Pro v7</span><span>'+oN()+' -- '+td+'</span></div>';prntVia(h,RPC,'Rapport '+ms)}
 
@@ -1062,7 +1144,30 @@ function renderChart(){
   el.innerHTML='<div class="chart-title">Recettes des 6 derniers mois</div><div class="chart-bars">'+bars+'</div>';
 }
 
-function renderAll(){renderDash();renderChart();renderRooms();renderTenants();renderRents();renderHist();renderRpt();renderRL()}
+function renderAll(){renderDash();renderSetup();renderChart();renderRooms();renderTenants();renderRents();renderHist();renderRpt();renderRL()}
+
+// Setup guide for first-time users
+function renderSetup(){
+  var el=document.getElementById('setup-guide');
+  var steps=document.getElementById('setup-steps');
+  if(!el||!steps)return;
+  var hasRooms=D.rooms.length>0;
+  var hasTenants=D.tenants.length>0;
+  var hasPayments=D.payments.length>0;
+  // Hide if everything is done
+  if(hasRooms&&hasTenants&&hasPayments){el.style.display='none';return}
+  el.style.display='block';
+  var items=[
+    {done:hasRooms,text:'Ajouter au moins une chambre',action:'openMdl(\'mdl-room\',null)'},
+    {done:hasTenants,text:'Enregistrer un locataire',action:'openMdl(\'mdl-tenant\',null)'},
+    {done:hasPayments,text:'Enregistrer un premier paiement',action:'openMdl(\'mdl-pay\',null)'}
+  ];
+  steps.innerHTML=items.map(function(it){
+    var icon=it.done?'<div style="width:22px;height:22px;border-radius:50%;background:var(--ok-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="3" stroke-linecap="round"><polyline points="20,6 9,17 4,12"/></svg></div>':'<div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--ink-200);flex-shrink:0;cursor:pointer" onclick="'+it.action+'"></div>';
+    var style=it.done?'text-decoration:line-through;color:var(--ink-300)':'color:var(--ink-700);cursor:pointer';
+    return'<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)" onclick="'+(it.done?'':it.action)+'">'+icon+'<span style="font-size:.85rem;font-weight:600;'+style+'">'+it.text+'</span></div>';
+  }).join('');
+}
 
 function renderDash(){var m=cM(),td=new Date().toISOString().split('T')[0];
 // Month label
@@ -1071,11 +1176,11 @@ var seen={},oi=[];D.tenants.forEach(function(t){if(D.rooms.find(function(r){retu
 document.getElementById('stats').innerHTML='<div class="st t-navy"><div class="st-l">Chambres</div><div class="st-v">'+tot+'</div></div><div class="st t-ok"><div class="st-l">Occupees</div><div class="st-v ok">'+no+'</div></div><div class="st t-inf"><div class="st-l">Libres</div><div class="st-v inf">'+(tot-no)+'</div></div><div class="st t-err"><div class="st-l">Impayes</div><div class="st-v err">'+up.length+'</div></div><div class="st t-ok"><div class="st-l">Recettes</div><div class="st-v ok">'+fC(rev)+'</div><div class="st-u">FCFA</div></div><div class="st '+(rt>=80?'t-ok':rt>=50?'t-wrn':'t-err')+'"><div class="st-l">Recouvrement</div><div class="st-v '+(rt>=80?'ok':rt>=50?'wrn':'err')+'">'+rt+'%</div></div>';
 var ae=document.getElementById('alrt-up'),pr=up.length+pe.length;ae.style.display=pr?'block':'none';if(pr)ae.innerHTML='<strong>Attention :</strong> '+pr+' loyer(s) impaye(s) ou en attente.';
 var i30=new Date();i30.setDate(i30.getDate()+30);var i30s=i30.toISOString().split('T')[0];var xp=D.tenants.filter(function(t){return t.endDate&&t.endDate>=td&&t.endDate<=i30s});var xpd=D.tenants.filter(function(t){return t.endDate&&t.endDate<td});var al=document.getElementById('alrt-bail');al.style.display=(xp.length||xpd.length)?'block':'none';var ap=[];if(xpd.length)ap.push('<strong>Baux expires :</strong> '+xpd.map(function(t){return t.name}).join(', ')+' (renouveler dans Locataires)');if(xp.length)ap.push('<strong>Expirent sous 30j :</strong> '+xp.map(function(t){return t.name+' ('+fD(t.endDate)+')'}).join(', '));if(ap.length)al.innerHTML=ap.join('<br>');
-var rc=D.payments.slice().sort(function(a,b){return(b.date||'').localeCompare(a.date||'')}).slice(0,8),tb=document.getElementById('rp');if(!rc.length){tb.innerHTML='<tr><td colspan="5"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--slate-300)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="15.5" r="2"/></svg><div class="empty-state-title">Aucun paiement pour le moment</div><div class="empty-state-text">Commencez par ajouter des chambres et des locataires via les actions rapides ci-dessus, puis enregistrez vos premiers loyers.</div></div></td></tr>';return}tb.innerHTML=rc.map(function(p){return'<tr><td style="font-weight:700">'+tNm(p.tenantId)+'</td><td style="color:var(--slate-500)">'+tRm(p.tenantId)+'</td><td style="font-family:var(--fm)">'+fC(p.amount)+' F</td><td style="color:var(--slate-500)">'+fMo(p.month)+'</td><td>'+sT(p.status)+'</td></tr>'}).join('')}
+var rc=D.payments.slice().sort(function(a,b){return(b.date||'').localeCompare(a.date||'')}).slice(0,8),tb=document.getElementById('rp');if(!rc.length){tb.innerHTML='<tr><td colspan="5"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--slate-300)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="15.5" r="2"/></svg><div class="empty-state-title">Aucun paiement pour le moment</div><div class="empty-state-text">Commencez par ajouter des chambres et des locataires via les actions rapides ci-dessus, puis enregistrez vos premiers loyers.</div></div></td></tr>';return}tb.innerHTML=rc.map(function(p){return'<tr><td style="font-weight:700;color:var(--em-600);cursor:pointer;text-decoration:underline" onclick="goH('+p.tenantId+')">'+tNm(p.tenantId)+'</td><td style="color:var(--ink-400)">'+tRm(p.tenantId)+'</td><td style="font-family:var(--fm)">'+fC(p.amount)+' F</td><td style="color:var(--ink-400)">'+fMo(p.month)+'</td><td>'+sT(p.status)+'</td></tr>'}).join('')}
 
 function renderRooms(){var g=document.getElementById('rooms');var q=(document.getElementById('search-rooms')?document.getElementById('search-rooms').value:'').toLowerCase();var filtered=D.rooms.filter(function(r){if(!q)return true;return(r.num+' '+r.type+' '+(r.desc||'')).toLowerCase().indexOf(q)>-1});if(!filtered.length){g.innerHTML='<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--slate-300)" stroke-width="1.5" stroke-linecap="round"><path d="M3 10.2L12 3l9 7.2V20a2 2 0 01-2 2H5a2 2 0 01-2-2V10.2z"/><rect x="9" y="14" width="6" height="8" rx="1"/></svg><div class="empty-state-title">'+(q?'Aucun resultat':'Aucune chambre enregistree')+'</div><div class="empty-state-text">'+(q?'Essayez un autre terme de recherche.':'Cliquez sur "+ Ajouter une chambre" pour enregistrer votre premier bien.')+'</div>'+(q?'':'<button class="btn-cta" onclick="openMdl(\'mdl-room\',null)" style="margin:0 auto">+ Ajouter ma premiere chambre</button>')+'</div>';return}g.innerHTML=filtered.map(function(r){var oc=D.tenants.find(function(t){return t.roomId==r.id}),statusCls=oc?'occupee':'libre',statusHtml=oc?'<div class="rc-status occupee"><div class="rc-status-dot"></div>Occupee</div>':'<div class="rc-status libre"><div class="rc-status-dot"></div>Disponible</div>';return'<div class="rc '+statusCls+'"><div class="rc-top"><div class="rc-nm">'+r.num+'</div>'+statusHtml+'</div><div class="rc-tp">'+r.type+(r.desc?' -- '+r.desc:'')+'</div>'+(oc?'<div class="rc-oc">'+oc.name+'</div>':'')+'<div class="rc-pr">'+fC(r.price)+' FCFA / mois</div>'+(r.deposit?'<div class="rc-dp">Caution : '+fC(r.deposit)+' F</div>':'')+'<div class="rc-acts"><button class="bp wrn" onclick="editRoom('+r.id+')">'+IC.edit+'Modifier</button><button class="bp err" onclick="delRoom('+r.id+')">'+IC.del+'Supprimer</button></div></div>'}).join('')}
 
-function renderTenants(){var tb=document.getElementById('tbd');var q=(document.getElementById('search-tenants')?document.getElementById('search-tenants').value:'').toLowerCase();var filtered=D.tenants.filter(function(t){if(!q)return true;return(t.name+' '+(t.phone||'')+' '+rNm(t.roomId)).toLowerCase().indexOf(q)>-1});if(!filtered.length){tb.innerHTML='<tr><td colspan="8"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--slate-300)" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><path d="M2 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg><div class="empty-state-title">'+(q?'Aucun resultat':'Aucun locataire')+'</div><div class="empty-state-text">'+(q?'Essayez un autre nom ou numero.':'Ajoutez votre premier locataire et associez-le a une chambre.')+'</div></div></td></tr>';return}var td=new Date().toISOString().split('T')[0];var in30=new Date();in30.setDate(in30.getDate()+30);var in30s=in30.toISOString().split('T')[0];tb.innerHTML=filtered.map(function(t){var exp=t.endDate&&t.endDate<td;var expiring=t.endDate&&!exp&&t.endDate<=in30s;var eb=exp?'<span class="tg tg-err">'+fD(t.endDate)+'</span>':expiring?'<span class="tg tg-wrn">'+fD(t.endDate)+'</span>':'<span style="font-size:.8rem">'+fD(t.endDate)+'</span>';var renewBtn=(exp||expiring)?'<button class="bp gold" onclick="renewBail('+t.id+')" title="Renouveler le bail">'+IC.edit+'Renouveler</button>':'';return'<tr><td style="font-weight:700">'+t.name+'</td><td style="font-family:var(--fm);color:var(--slate-500)">'+(t.phone||'-')+'</td><td>'+rNm(t.roomId)+'</td><td style="color:var(--slate-500)">'+fD(t.startDate)+'</td><td>'+eb+'</td><td style="font-family:var(--fm)">'+(t.deposit?fC(t.deposit)+' F':'-')+'</td><td class="hide-m" style="color:var(--slate-400);font-size:.72rem">'+(t.idDoc||'-')+'</td><td><div class="acell" style="display:flex;gap:4px;flex-wrap:wrap">'+renewBtn+'<button class="bp inf" onclick="goH('+t.id+')">'+IC.hist+'Historique</button><button class="bp wrn" onclick="editTenant('+t.id+')">'+IC.edit+'Modifier</button><button class="bp wa" onclick="waR('+t.id+')">'+IC.wa+'WhatsApp</button><button class="bp err" onclick="delTenant('+t.id+')">'+IC.userX+'Retirer</button></div></td></tr>'}).join('')}
+function renderTenants(){var tb=document.getElementById('tbd');var q=(document.getElementById('search-tenants')?document.getElementById('search-tenants').value:'').toLowerCase();var filtered=D.tenants.filter(function(t){if(!q)return true;return(t.name+' '+(t.phone||'')+' '+rNm(t.roomId)).toLowerCase().indexOf(q)>-1});if(!filtered.length){tb.innerHTML='<tr><td colspan="8"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ink-300)" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><path d="M2 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg><div class="empty-state-title">'+(q?'Aucun resultat':'Aucun locataire')+'</div><div class="empty-state-text">'+(q?'Essayez un autre nom ou numero.':'Ajoutez votre premier locataire.')+'</div></div></td></tr>';return}var td=new Date().toISOString().split('T')[0];var in30=new Date();in30.setDate(in30.getDate()+30);var in30s=in30.toISOString().split('T')[0];tb.innerHTML=filtered.map(function(t){var exp=t.endDate&&t.endDate<td;var expiring=t.endDate&&!exp&&t.endDate<=in30s;var eb=exp?'<span class="tg tg-err">'+fD(t.endDate)+'</span>':expiring?'<span class="tg tg-wrn">'+fD(t.endDate)+'</span>':'<span style="font-size:.78rem">'+fD(t.endDate)+'</span>';var renewBtn=(exp||expiring)?'<button class="bp gold" onclick="renewBail('+t.id+')">Renouveler</button>':'';return'<tr><td style="font-weight:700;cursor:pointer;color:var(--em-600)" onclick="goH('+t.id+')">'+t.name+'</td><td class="hide-m" style="font-family:var(--fm);color:var(--ink-400)">'+(t.phone||'-')+'</td><td>'+rNm(t.roomId)+'</td><td class="hide-m" style="color:var(--ink-400)">'+fD(t.startDate)+'</td><td>'+eb+'</td><td class="hide-m" style="font-family:var(--fm)">'+(t.deposit?fC(t.deposit)+' F':'-')+'</td><td class="hide-m" style="color:var(--ink-300);font-size:.72rem">'+(t.idDoc||'-')+'</td><td><div class="acell" style="display:flex;gap:4px;flex-wrap:wrap">'+renewBtn+'<button class="bp wrn" onclick="editTenant('+t.id+')">'+IC.edit+'Modifier</button><button class="bp wa" onclick="waR('+t.id+')">'+IC.wa+'</button><button class="bp err" onclick="delTenant('+t.id+')">'+IC.del+'</button></div></td></tr>'}).join('')}
 
 function renderRents(){var tb=document.getElementById('rbody'),fm=document.getElementById('rent-mo')?document.getElementById('rent-mo').value:'',src=D.payments.slice().sort(function(a,b){return(b.month||'').localeCompare(a.month||'')||(b.date||'').localeCompare(a.date||'')});if(fm)src=src.filter(function(p){return p.month===fm});var se=document.getElementById('rent-sum');if(fm&&src.length){var co=src.filter(function(p){return p.status==='paye'}).reduce(function(s,p){return s+p.amount},0),np=src.filter(function(p){return p.status==='en_attente'}).length,nu=src.filter(function(p){return p.status==='impaye'}).length;se.style.display='flex';se.style.gap='10px';se.style.flexWrap='wrap';se.innerHTML='<div class="st t-ok" style="flex:1;min-width:140px"><div class="st-l">Percus -- '+fMo(fm)+'</div><div class="st-v ok" style="font-size:1.2rem">'+fC(co)+'<span style="font-size:.7rem;margin-left:3px;opacity:.6">FCFA</span></div></div><div class="st t-wrn" style="flex:1;min-width:100px"><div class="st-l">En attente</div><div class="st-v wrn">'+np+'</div></div><div class="st t-err" style="flex:1;min-width:100px"><div class="st-l">Impayes</div><div class="st-v err">'+nu+'</div></div>'}else{se.style.display='none'}if(!src.length){tb.innerHTML='<tr><td colspan="7" class="empty">'+(fm?'Aucun paiement ce mois.':'Aucun paiement.')+'</td></tr>';return}tb.innerHTML=src.map(function(p){var ac=p.status!=='paye'?'<button class="bp ok" onclick="markPd('+p.id+')">'+IC.check+'Marquer paye</button>':'<button class="bp inf" onclick="showQt('+p.id+')">'+IC.receipt+'Quittance</button>';return'<tr><td style="font-weight:700">'+tNm(p.tenantId)+'</td><td style="color:var(--slate-500)">'+tRm(p.tenantId)+'</td><td style="font-family:var(--fm)">'+fC(p.amount)+' F</td><td style="color:var(--slate-500)">'+fMo(p.month)+'</td><td class="hide-m" style="color:var(--slate-400);font-size:.72rem">'+(p.date||'-')+'</td><td>'+sT(p.status)+'</td><td><div style="display:flex;gap:4px;flex-wrap:wrap">'+ac+'<button class="bp wrn" onclick="editPay('+p.id+')">'+IC.edit+'Modifier</button><button class="bp err" onclick="delPay('+p.id+')">'+IC.del+'Sup.</button></div></td></tr>'}).join('')}
 
@@ -1089,6 +1194,87 @@ function renderRL(){var m=cM(),dv=document.getElementById('rl-cont'),tr=D.tenant
 function unpaidStreak(tid){var count=0;var checkM=m;for(var i=0;i<12;i++){var p=D.payments.find(function(x){return x.tenantId==tid&&x.month===checkM&&x.status==='paye'});if(!p)count++;else break;var d=new Date(checkM+'-01');d.setMonth(d.getMonth()-1);checkM=d.toISOString().slice(0,7)}return count}
 dv.innerHTML='<div style="font-size:.85rem;color:var(--slate-500);margin-bottom:1rem;font-weight:600">'+tr.length+' locataire(s) a relancer pour '+fMo(m)+'</div>'+tr.map(function(t){var r=rById(t.roomId),p=D.payments.find(function(x){return x.tenantId==t.id&&x.month===m}),st=p?sT(p.status):'<span class="tg tg-err">Non enregistre</span>';var streak=unpaidStreak(t.id);var streakBadge=streak>1?'<span class="tg tg-err" style="font-size:.58rem">'+streak+' mois consecutifs</span>':'';return'<div class="rlc"><div><div class="rlc-nm">'+t.name+' '+streakBadge+'</div><div class="rlc-meta">'+rNm(t.roomId)+' -- '+(r?fC(r.price)+' F':'')+' -- Tel : '+(t.phone||'non renseigne')+'</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+st+'<button class="bp wa" onclick="waR('+t.id+')">'+IC.wa+'WhatsApp</button><button class="bp ok" onclick="mkPdR('+t.id+')">'+IC.check+'Marquer paye</button></div></div>'}).join('')}
 function mkPdR(i){var m=cM(),t=tById(i),r=t?rById(t.roomId):null,p=D.payments.find(function(x){return x.tenantId==i&&x.month===m});if(p){p.status='paye';p.date=new Date().toISOString().split('T')[0]}else if(t&&r)D.payments.push({id:uid(),tenantId:i,amount:r.price,month:m,date:new Date().toISOString().split('T')[0],status:'paye',notes:''});sv();renderAll();toast('Paiement enregistre','ok')}
+
+// ========== INTERACTIVE GUIDE ==========
+var guideStep=0;
+var GUIDE=[
+  {title:'Inscription',desc:'Creez votre compte proprietaire',
+    phone:'<div style="background:#060810;border-radius:6px;padding:14px;text-align:center"><div style="width:36px;height:36px;border-radius:10px;background:#1aaa56;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;font-family:monospace">GL</div><div style="color:#fff;font-weight:700;font-size:12px;margin-bottom:10px">GestiLoc Pro</div><div style="display:flex;background:#1a1f2e;border-radius:6px;padding:2px;margin-bottom:10px"><div style="flex:1;padding:6px;text-align:center;font-size:9px;color:#8B95A8">Connexion</div><div style="flex:1;padding:6px;text-align:center;font-size:9px;color:#fff;background:#2a3040;border-radius:5px;font-weight:700">Inscription</div></div><div style="text-align:left"><div style="font-size:7px;color:#8B95A8;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:2px">NOM COMPLET</div><div style="background:#1a1f2e;border:1px solid #2E3548;border-radius:5px;padding:6px 8px;color:#8B95A8;font-size:9px;margin-bottom:6px">AGBOSSOU Pierre</div><div style="font-size:7px;color:#8B95A8;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:2px">MOT DE PASSE</div><div style="background:#1a1f2e;border:1px solid #2E3548;border-radius:5px;padding:6px 8px;color:#8B95A8;font-size:9px;margin-bottom:10px">********</div><div style="background:#1aaa56;color:#fff;text-align:center;padding:8px;border-radius:6px;font-weight:700;font-size:10px">Creer mon compte</div></div></div>',
+    steps:['Ouvrez GestiLoc Pro sur votre telephone','Cliquez "Commencer gratuitement"','Choisissez l\'onglet Inscription','Entrez votre nom complet','Choisissez un mot de passe (min. 4 caracteres)','Confirmez et validez'],
+    tip:'Votre nom apparaitra sur les quittances officielles.',warn:'Notez bien votre mot de passe ! Cliquez "Mot de passe oublie" en cas d\'oubli.'},
+  {title:'Ajouter des chambres',desc:'Enregistrez vos biens immobiliers',
+    phone:'<div style="background:#faf8f4;border-radius:6px;padding:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:11px;font-weight:800;color:#1a1e28;border-left:3px solid #1aaa56;padding-left:6px">Mes chambres</div><div style="background:#1aaa56;color:#fff;font-size:8px;font-weight:700;padding:4px 10px;border-radius:5px">+ Ajouter</div></div><div style="background:#fff;border-radius:6px;padding:10px;border-left:3px solid #1aaa56;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="display:flex;justify-content:space-between"><div style="font-weight:700;font-size:10px;color:#1a1e28">Chambre 1</div><div style="background:#e6f7ef;color:#1aaa56;font-size:7px;font-weight:800;padding:2px 6px;border-radius:8px">Libre</div></div><div style="font-size:8px;color:#6b7a90;margin-top:1px">CHAMBRE SIMPLE</div><div style="font-size:10px;font-weight:700;color:#1aaa56;margin-top:4px;font-family:monospace">15 000 F</div></div><div style="background:#fff;border-radius:6px;padding:10px;border-left:3px solid #a87000;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="display:flex;justify-content:space-between"><div style="font-weight:700;font-size:10px;color:#1a1e28">Studio A</div><div style="background:#fef5dd;color:#a87000;font-size:7px;font-weight:800;padding:2px 6px;border-radius:8px">Occupee</div></div><div style="font-size:8px;color:#6b7a90;margin-top:1px">STUDIO</div><div style="font-size:9px;color:#4a5568;font-weight:600;margin-top:3px">DOSSOU Aline</div><div style="font-size:10px;font-weight:700;color:#1aaa56;margin-top:3px;font-family:monospace">40 000 F</div></div></div>',
+    steps:['Allez dans l\'onglet Chambres','Cliquez "+ Ajouter"','Entrez le nom (ex: Chambre 1)','Choisissez le type : Simple, Studio, Boutique...','Entrez le loyer mensuel en FCFA','Entrez la caution','Cliquez Enregistrer'],
+    tip:'Chambres libres = bordure verte. Occupees = bordure orange avec le nom du locataire.',warn:'Impossible de supprimer une chambre occupee. Retirez d\'abord le locataire.'},
+  {title:'Associer un locataire',desc:'Attribuez chaque locataire a sa chambre',
+    phone:'<div style="background:#faf8f4;border-radius:6px;padding:10px"><div style="font-size:11px;font-weight:800;color:#1a1e28;border-left:3px solid #1aaa56;padding-left:6px;margin-bottom:8px">Nouveau locataire</div><div style="background:#fff;border-radius:6px;padding:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="margin-bottom:5px"><div style="font-size:6px;color:#6b7a90;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:1px">NOM</div><div style="background:#f4f6f9;border:1px solid #e2e8f0;border-radius:4px;padding:5px 7px;font-size:9px;color:#1a1e28">ADJOVI Kossi</div></div><div style="margin-bottom:5px"><div style="font-size:6px;color:#6b7a90;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:1px">WHATSAPP</div><div style="background:#f4f6f9;border:1px solid #e2e8f0;border-radius:4px;padding:5px 7px;font-size:9px;color:#1a1e28">+229 97 11 22 33</div></div><div style="margin-bottom:5px"><div style="font-size:6px;color:#6b7a90;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:1px">CHAMBRE</div><div style="background:#f4f6f9;border:1px solid #e2e8f0;border-radius:4px;padding:5px 7px;font-size:9px;color:#1a1e28">Chambre 1 -- 15 000 F</div></div><div style="margin-bottom:5px"><div style="font-size:6px;color:#6b7a90;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:1px">ENTREE / FIN BAIL</div><div style="background:#f4f6f9;border:1px solid #e2e8f0;border-radius:4px;padding:5px 7px;font-size:9px;color:#1a1e28">01/03/2024 -- 01/03/2025</div></div></div><div style="display:flex;gap:5px;margin-top:8px"><div style="flex:1;text-align:center;padding:7px;border:1px solid #e2e8f0;border-radius:5px;font-size:9px;font-weight:600;color:#6b7a90">Annuler</div><div style="flex:2;text-align:center;padding:7px;background:#1aaa56;border-radius:5px;font-size:9px;font-weight:700;color:#fff">Enregistrer</div></div></div>',
+    steps:['Allez dans Locataires puis "+ Ajouter"','Entrez le nom complet','Ajoutez le numero WhatsApp','Selectionnez la chambre','Renseignez les dates du bail','Entrez la caution versee','Cliquez Enregistrer'],
+    tip:'Le numero WhatsApp permet d\'envoyer des relances de loyer en un clic.',warn:'Une chambre = un seul locataire. L\'app bloque les doublons.'},
+  {title:'Enregistrer les loyers',desc:'Suivez les paiements chaque mois',
+    phone:'<div style="background:#faf8f4;border-radius:6px;padding:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:11px;font-weight:800;color:#1a1e28;border-left:3px solid #1aaa56;padding-left:6px">Loyers</div><div style="background:#1aaa56;color:#fff;font-size:8px;font-weight:700;padding:4px 8px;border-radius:5px">+ Paiement</div></div><div style="background:#fff;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="display:grid;grid-template-columns:2fr 1fr 1fr;background:#0a4424;padding:6px 8px"><div style="font-size:6px;font-weight:800;color:rgba(255,255,255,.6)">NOM</div><div style="font-size:6px;font-weight:800;color:rgba(255,255,255,.6)">MONTANT</div><div style="font-size:6px;font-weight:800;color:rgba(255,255,255,.6)">STATUT</div></div><div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:6px 8px;border-bottom:1px solid #f0f0f0;align-items:center"><div style="font-size:9px;font-weight:600;color:#1a1e28">ADJOVI K.</div><div style="font-size:9px;font-family:monospace;color:#4a5568">15 000</div><div style="font-size:6px;font-weight:800;color:#1aaa56;background:#e6f7ef;padding:2px 5px;border-radius:6px;text-align:center">Paye</div></div><div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:6px 8px;border-bottom:1px solid #f0f0f0;align-items:center"><div style="font-size:9px;font-weight:600;color:#1a1e28">DOSSOU A.</div><div style="font-size:9px;font-family:monospace;color:#4a5568">25 000</div><div style="font-size:6px;font-weight:800;color:#a87000;background:#fef5dd;padding:2px 5px;border-radius:6px;text-align:center">Attente</div></div><div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:6px 8px;align-items:center"><div style="font-size:9px;font-weight:600;color:#1a1e28">AKPOTO E.</div><div style="font-size:9px;font-family:monospace;color:#4a5568">35 000</div><div style="font-size:6px;font-weight:800;color:#c43030;background:#fde8e8;padding:2px 5px;border-radius:6px;text-align:center">Impaye</div></div></div><div style="display:flex;gap:5px;margin-top:8px"><div style="flex:1;background:#e6f7ef;border-radius:6px;padding:7px;text-align:center"><div style="font-size:6px;color:#6b7a90;font-weight:700">PERCUS</div><div style="font-size:12px;font-weight:700;color:#1aaa56;font-family:monospace">130K</div></div><div style="flex:1;background:#fde8e8;border-radius:6px;padding:7px;text-align:center"><div style="font-size:6px;color:#6b7a90;font-weight:700">IMPAYES</div><div style="font-size:12px;font-weight:700;color:#c43030;font-family:monospace">35K</div></div></div></div>',
+    steps:['Allez dans l\'onglet Loyers','Cliquez "+ Paiement"','Selectionnez le locataire','Le montant se remplit automatiquement','Choisissez le mois et la date','Statut : Paye, En attente ou Impaye','Cliquez Enregistrer'],
+    tip:'Filtrez par mois avec le selecteur de date. Le resume percus/impayes s\'affiche automatiquement.',warn:'L\'app detecte les paiements en double pour le meme locataire et le meme mois.'},
+  {title:'Suivre et relancer',desc:'Dashboard, relances WhatsApp et rapports',
+    phone:'<div style="background:#faf8f4;border-radius:6px;padding:8px"><div style="background:#0a4424;border-radius:5px;padding:5px 8px;display:flex;align-items:center;gap:5px;margin-bottom:6px"><div style="width:14px;height:14px;border-radius:4px;background:#1aaa56;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:700;color:#fff;font-family:monospace">GL</div><div style="color:#fff;font-size:8px;font-weight:700">Dashboard</div></div><div style="font-size:7px;color:#1aaa56;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">AVRIL 2026</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-bottom:6px"><div style="background:#fff;border-radius:4px;padding:4px;border-bottom:2px solid #1aaa56"><div style="font-size:5px;color:#95a3b8;font-weight:700">CHAMBRES</div><div style="font-size:12px;font-weight:700;color:#1a1e28;font-family:monospace">6</div></div><div style="background:#fff;border-radius:4px;padding:4px;border-bottom:2px solid #1aaa56"><div style="font-size:5px;color:#95a3b8;font-weight:700">OCCUPEES</div><div style="font-size:12px;font-weight:700;color:#1aaa56;font-family:monospace">5</div></div><div style="background:#fff;border-radius:4px;padding:4px;border-bottom:2px solid #c43030"><div style="font-size:5px;color:#95a3b8;font-weight:700">IMPAYES</div><div style="font-size:12px;font-weight:700;color:#c43030;font-family:monospace">2</div></div></div><div style="background:#fff;border-radius:4px;padding:6px;margin-bottom:4px"><div style="font-size:5px;color:#95a3b8;font-weight:700;margin-bottom:4px">RECETTES 6 MOIS</div><div style="display:flex;align-items:flex-end;gap:2px;height:28px"><div style="flex:1;height:25%;border-radius:2px 2px 0 0;background:rgba(26,170,86,.3)"></div><div style="flex:1;height:45%;border-radius:2px 2px 0 0;background:rgba(26,170,86,.4)"></div><div style="flex:1;height:60%;border-radius:2px 2px 0 0;background:rgba(26,170,86,.5)"></div><div style="flex:1;height:50%;border-radius:2px 2px 0 0;background:rgba(26,170,86,.55)"></div><div style="flex:1;height:75%;border-radius:2px 2px 0 0;background:rgba(26,170,86,.7)"></div><div style="flex:1;height:100%;border-radius:2px 2px 0 0;background:#28cc6a"></div></div></div><div style="background:#fde8e8;border-left:3px solid #c43030;border-radius:4px;padding:5px 7px;font-size:7px;color:#c43030;font-weight:600;margin-bottom:4px">2 locataires en retard ce mois</div><div style="background:#fef5dd;border-left:3px solid #a87000;border-radius:4px;padding:5px 7px;font-size:7px;color:#a87000;font-weight:600">1 bail expire -- renouveler</div></div>',
+    steps:['Le dashboard montre vos stats en temps reel','Alertes rouges = impayes du mois','Alertes orange = baux qui expirent','Graphique de recettes sur 6 mois','Relances : voir tous les retardataires','Cliquez WhatsApp pour envoyer un rappel','Rapport : synthese mensuelle imprimable'],
+    tip:'Les locataires avec plusieurs mois consecutifs d\'impayes ont un badge rouge special.',warn:'Pour imprimer sur telephone : cliquez Imprimer puis "Enregistrer en PDF" dans la boite de dialogue.'}
+];
+
+function showGuide(){
+  document.getElementById('guide-screen').style.display='block';
+  document.getElementById('landing-screen').style.display='none';
+  guideStep=0;renderGuide();
+}
+function hideGuide(){
+  document.getElementById('guide-screen').style.display='none';
+  document.getElementById('landing-screen').style.display='block';
+}
+function guideNav(dir){
+  guideStep=Math.max(0,Math.min(GUIDE.length,guideStep+dir));
+  renderGuide();
+  document.getElementById('guide-screen').scrollTo(0,0);
+}
+function renderGuide(){
+  var total=GUIDE.length+1;
+  // Stepper
+  var dots='';
+  for(var i=0;i<total;i++){
+    var bg=i<guideStep?'#00C48C':i===guideStep?'#fff':'#2A3040';
+    var col=i<guideStep?'#fff':i===guideStep?'#0F1219':'#8B95A8';
+    var sh=i===guideStep?'box-shadow:0 0 0 3px rgba(0,196,140,.3)':'';
+    var label=i<guideStep?'&#10003;':i===GUIDE.length?'&#9733;':''+(i+1);
+    dots+='<div style="display:flex;align-items:center"><div onclick="guideStep='+i+';renderGuide()" style="width:28px;height:28px;border-radius:50%;background:'+bg+';color:'+col+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;font-family:monospace;'+sh+'">'+label+'</div>'+(i<total-1?'<div style="width:18px;height:2px;background:'+(i<guideStep?'#00C48C':'#2A3040')+';border-radius:1px"></div>':'')+'</div>';
+  }
+  document.getElementById('guide-stepper').innerHTML=dots;
+
+  var ct=document.getElementById('guide-content');
+  if(guideStep>=GUIDE.length){
+    // Recap
+    var items=[
+      'Inscrivez-vous avec votre nom, ville et mot de passe',
+      'Ajoutez toutes vos chambres avec leur loyer',
+      'Enregistrez chaque locataire et associez-le a sa chambre',
+      'Chaque mois, enregistrez les paiements recus',
+      'Suivez vos revenus et relancez via WhatsApp'
+    ];
+    ct.innerHTML='<div style="text-align:center;margin-bottom:20px"><div style="width:48px;height:48px;border-radius:14px;background:rgba(0,196,140,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px">&#10004;</div><div style="font-size:16px;font-weight:800;font-family:var(--f1)">Vous etes pret !</div><div style="font-size:12px;color:#8B95A8;margin-top:4px">Resume des etapes cles</div></div>'+items.map(function(t,i){return'<div style="display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:'+(i<4?'1px solid #2E3548':'none')+'"><div style="width:28px;height:28px;border-radius:50%;background:#00C48C;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;font-family:monospace">'+(i+1)+'</div><div style="font-size:12px;color:#E8ECF4;line-height:1.5">'+t+'</div></div>'}).join('')+'<div style="margin-top:16px;text-align:center"><button onclick="hideGuide();loadDemoFromLanding()" style="background:#00C48C;border:none;border-radius:10px;padding:14px 28px;color:#fff;cursor:pointer;font-size:.9rem;font-weight:700;font-family:var(--f1);box-shadow:0 4px 16px rgba(0,196,140,.3);width:100%">Tester l\'app avec des donnees demo</button></div>';
+  }else{
+    var s=GUIDE[guideStep];
+    ct.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:32px;height:32px;border-radius:8px;background:rgba(0,196,140,.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#00C48C;font-family:monospace">'+(guideStep+1)+'</div><div><div style="font-size:14px;font-weight:700">'+s.title+'</div><div style="font-size:11px;color:#8B95A8">'+s.desc+'</div></div></div><div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center"><div style="width:160px;flex-shrink:0"><div style="background:#0d1118;border-radius:16px;padding:24px 6px 12px;position:relative;box-shadow:0 6px 24px rgba(0,0,0,.3)"><div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:40px;height:10px;border-radius:5px;background:#000"></div><div style="border-radius:6px;overflow:hidden">'+s.phone+'</div></div></div><div style="flex:1;min-width:200px"><div style="font-size:10px;font-weight:700;color:#8B95A8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Instructions</div>'+s.steps.map(function(st,j){return'<div style="display:flex;gap:8px;margin-bottom:8px;align-items:flex-start"><div style="width:18px;height:18px;border-radius:50%;background:#2A3040;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#8B95A8;flex-shrink:0;font-family:monospace">'+(j+1)+'</div><div style="font-size:12px;color:#E8ECF4;line-height:1.5;padding-top:1px">'+st+'</div></div>'}).join('')+'</div></div>'+(s.tip?'<div style="margin-top:14px;background:rgba(0,196,140,.06);border:1px solid rgba(0,196,140,.15);border-radius:8px;padding:10px 14px;font-size:11px;color:#00C48C;line-height:1.6">'+s.tip+'</div>':'')+(s.warn?'<div style="margin-top:8px;background:rgba(255,159,67,.06);border:1px solid rgba(255,159,67,.15);border-radius:8px;padding:10px 14px;font-size:11px;color:#FF9F43;line-height:1.6">'+s.warn+'</div>':'');
+  }
+  // Buttons
+  var prev=document.getElementById('guide-prev');
+  var next=document.getElementById('guide-next');
+  prev.style.opacity=guideStep===0?'.3':'1';
+  prev.style.pointerEvents=guideStep===0?'none':'auto';
+  next.textContent=guideStep===GUIDE.length-1?'Voir le resume':guideStep>=GUIDE.length?'':'Suivant';
+  next.style.display=guideStep>=GUIDE.length?'none':'block';
+}
+
+// More menu toggle
+function toggleMore(){var m=document.getElementById('more-menu');m.style.display=m.style.display==='none'?'block':'none'}
+function hideMore(){document.getElementById('more-menu').style.display='none'}
+document.addEventListener('click',function(e){if(!e.target.closest('#more-menu')&&!e.target.closest('#nav-more'))hideMore()});
 
 document.addEventListener('DOMContentLoaded',function(){
   ld();
